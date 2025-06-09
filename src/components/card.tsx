@@ -4,13 +4,16 @@ import '../css/card.css'
 function Card(){
     const [time, setTime] = useState(0);
     const [isRunning, setIsRunning] = useState(false);
+    const [pressedButton, setPressedButton] = useState<'start' | 'reset' | null>(null);
+    const startButtonRef = useRef<HTMLButtonElement>(null);
+    const resetButtonRef = useRef<HTMLButtonElement>(null);
     const intervalRef = useRef<number | null>(null);
 
     useEffect(() => {
         if (isRunning) {
             intervalRef.current = setInterval(() => {
-                setTime(prev => prev + 1);
-            }, 1000);
+                setTime(prev => prev + 10);
+            }, 10);
         } else if (intervalRef.current) {
             clearInterval(intervalRef.current);
             intervalRef.current = null;
@@ -19,6 +22,52 @@ function Card(){
             if (intervalRef.current) {
                 clearInterval(intervalRef.current);
             }
+        };
+    }, [isRunning]);
+
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            switch(event.code) {
+                case 'Space':
+                    event.preventDefault();
+                    if (document.activeElement === resetButtonRef.current) {
+                        setPressedButton('reset');
+                        resetTimer();
+                    } else {
+                        setPressedButton('start');
+                        if (isRunning) {
+                            stopTimer();
+                        } else {
+                            startTimer();
+                        }
+                    }
+                    break;
+                case 'ArrowLeft':
+                    event.preventDefault();
+                    if (startButtonRef.current) {
+                        startButtonRef.current.focus();
+                    }
+                    break;
+                case 'ArrowRight':
+                    event.preventDefault();
+                    if (resetButtonRef.current) {
+                        resetButtonRef.current.focus();
+                    }
+                    break;
+            }
+        };
+
+        const handleKeyUp = (event: KeyboardEvent) => {
+            if (event.code === 'Space') {
+                setPressedButton(null);
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        window.addEventListener('keyup', handleKeyUp);
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+            window.removeEventListener('keyup', handleKeyUp);
         };
     }, [isRunning]);
 
@@ -34,20 +83,32 @@ function Card(){
     }
 
     function formatTime(time: number){
-        const hours = String(Math.floor(time / 3600)).padStart(2, '0');
-        const minutes = String(Math.floor((time % 3600) / 60)).padStart(2, '0');
-        const seconds = String(time % 60).padStart(2, '0');
-        return `${hours}:${minutes}:${seconds}`;
+        const totalSeconds = Math.floor(time / 1000);
+        const hours = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
+        const minutes = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
+        const seconds = String(totalSeconds % 60).padStart(2, '0');
+        const milliseconds = String(Math.floor((time % 1000) / 10)).padStart(2, '0');
+        return `${hours}:${minutes}:${seconds}:${milliseconds}`;
     }
+
     return (
         <>
             <div className="card">
                 <div className="display">{formatTime(time)}</div>
                 <div className="controls">
-                    <button onClick={isRunning ? stopTimer : startTimer}>
+                    <button 
+                        ref={startButtonRef}
+                        onClick={isRunning ? stopTimer : startTimer}
+                        className={pressedButton === 'start' ? 'space-pressed' : ''}
+                    >
                         {isRunning ? "Stop" : "Start"}
                     </button>
-                    <button onClick={resetTimer} className='reset_button' disabled={time === 0 && !isRunning}>
+                    <button 
+                        ref={resetButtonRef}
+                        onClick={resetTimer} 
+                        className={`reset_button ${pressedButton === 'reset' ? 'space-pressed' : ''}`} 
+                        disabled={time === 0 && !isRunning}
+                    >
                         Reset
                     </button>
                 </div>
