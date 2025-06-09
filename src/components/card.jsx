@@ -4,11 +4,11 @@ import '../css/card.css'
 function Card(){
     const [time, setTime] = useState(0);
     const [isRunning, setIsRunning] = useState(false);
-    const [pressedButton, setPressedButton] = useState<'start' | 'reset' | null>(null);
-    const startButtonRef = useRef<HTMLButtonElement>(null);
-    const resetButtonRef = useRef<HTMLButtonElement>(null);
-    const intervalRef = useRef<number | null>(null);
-    const startTimeRef = useRef<number>(0);
+    const [pressedButton, setPressedButton] = useState(null);
+    const startButtonRef = useRef(null);
+    const resetButtonRef = useRef(null);
+    const intervalRef = useRef(null);
+    const startTimeRef = useRef(0);
 
     useEffect(() => {
         if (isRunning) {
@@ -29,7 +29,7 @@ function Card(){
     }, [isRunning]);
 
     useEffect(() => {
-        const handleKeyDown = (event: KeyboardEvent) => {
+        const handleKeyDown = (event) => {
             switch(event.code) {
                 case 'Space':
                     event.preventDefault();
@@ -60,7 +60,7 @@ function Card(){
             }
         };
 
-        const handleKeyUp = (event: KeyboardEvent) => {
+        const handleKeyUp = (event) => {
             if (event.code === 'Space') {
                 setPressedButton(null);
             }
@@ -86,7 +86,7 @@ function Card(){
         setIsRunning(false);
     }
 
-    function formatTime(time: number){
+    function formatTime(time){
         const totalSeconds = Math.floor(time / 1000);
         const hours = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
         const minutes = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
