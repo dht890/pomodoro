@@ -8,11 +8,14 @@ function Card(){
     const startButtonRef = useRef<HTMLButtonElement>(null);
     const resetButtonRef = useRef<HTMLButtonElement>(null);
     const intervalRef = useRef<number | null>(null);
+    const startTimeRef = useRef<number>(0);
 
     useEffect(() => {
         if (isRunning) {
+            startTimeRef.current = Date.now() - time;
             intervalRef.current = setInterval(() => {
-                setTime(prev => prev + 10);
+                const currentTime = Date.now() - startTimeRef.current;
+                setTime(currentTime);
             }, 10);
         } else if (intervalRef.current) {
             clearInterval(intervalRef.current);
@@ -77,6 +80,7 @@ function Card(){
     function resetTimer(){
         setIsRunning(false);
         setTime(0);
+        startTimeRef.current = 0;
     }
     function stopTimer(){
         setIsRunning(false);
