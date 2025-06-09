@@ -40,6 +40,14 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     transition: background-color 0.3s ease;
 }
+
+.controls button:focus {
+    outline: none;
+    transform: scale(1.02);
+    transition: transform 0.3s ease;
+    box-shadow: 0 0 10px #878787;
+}
+
 .controls button:hover{
     transform: scale(1.05);
     transition: transform 0.3s ease;
@@ -48,9 +56,27 @@
 .controls .reset_button {
     width: 100px;
     height: 100px;
-    margin-left: 1px;
+    margin-left: 2px;
     background-color: #ffffff;
     color: #333;
     transition: background-color 0.3s;
 }
 
+@keyframes spacePress {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    50% {
+        transform: scale(0.98);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+}
+
+.space-pressed {
+    animation: spacePress 0.2s ease;
+}
