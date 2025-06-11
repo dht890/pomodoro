@@ -47,14 +47,18 @@ function Card(){
                     break;
                 case 'ArrowLeft':
                     event.preventDefault();
-                    if (startButtonRef.current) {
+                    if (document.activeElement === resetButtonRef.current) {
                         startButtonRef.current.focus();
+                    } else {
+                        resetButtonRef.current.focus();
                     }
                     break;
                 case 'ArrowRight':
                     event.preventDefault();
-                    if (resetButtonRef.current) {
+                    if (document.activeElement === startButtonRef.current) {
                         resetButtonRef.current.focus();
+                    } else {
+                        startButtonRef.current.focus();
                     }
                     break;
             }
