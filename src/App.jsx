@@ -10,6 +10,7 @@ function App() {
       <Navbar />
       <main>
         <Routes>
+          <Route path="/" element={<Timer />} />
           <Route path="/stopwatch" element={<Stopwatch />} />
           <Route path="/timer" element={<Timer />} />
           <Route path="/settings" element={<div className="page">Settings Page</div>} />
