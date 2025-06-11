@@ -1,4 +1,5 @@
-import Card from './components/card.jsx'
+import Stopwatch from './components/Stopwatch.jsx'
+import Timer from './components/Timer.jsx'
 import Navbar from './components/Navbar.jsx'
 import { Routes, Route } from 'react-router-dom'
 import './css/App.css'
@@ -9,8 +10,8 @@ function App() {
       <Navbar />
       <main>
         <Routes>
-          <Route path="/" element={<Card/>} />
-          <Route path="/stats" element={<div className="page">Statistics Page</div>} />
+          <Route path="/stopwatch" element={<Stopwatch />} />
+          <Route path="/timer" element={<Timer />} />
           <Route path="/settings" element={<div className="page">Settings Page</div>} />
         </Routes>
       </main>
