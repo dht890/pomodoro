@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import '../css/card.css'
 
-function Card(){
+function Timer(){
     const [time, setTime] = useState(0);
     const [isRunning, setIsRunning] = useState(false);
     const [pressedButton, setPressedButton] = useState(null);
@@ -125,4 +125,4 @@ function Card(){
     )
 }
 
-export default Card;
+export default Timer;
