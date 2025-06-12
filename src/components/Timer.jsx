@@ -1,12 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
+import gearIcon from '../assets/gear.svg';
 import '../css/card.css'
 
-function Timer(){
+function Timer() {
     const [time, setTime] = useState(0);
     const [isRunning, setIsRunning] = useState(false);
     const [pressedButton, setPressedButton] = useState(null);
     const startButtonRef = useRef(null);
     const resetButtonRef = useRef(null);
+    const settingsButtonRef = useRef(null);
     const intervalRef = useRef(null);
     const startTimeRef = useRef(0);
 
@@ -30,13 +32,16 @@ function Timer(){
 
     useEffect(() => {
         const handleKeyDown = (event) => {
-            switch(event.code) {
+            switch (event.code) {
                 case 'Space':
                     event.preventDefault();
                     if (document.activeElement === resetButtonRef.current) {
                         setPressedButton('reset');
                         resetTimer();
-                    } else {
+                    } else if (document.activeElement === settingsButtonRef.current) {
+                        setPressedButton('settings');
+                        countdown();
+                    } else if (document.activeElement === startButtonRef.current) {
                         setPressedButton('start');
                         if (isRunning) {
                             stopTimer();
@@ -49,16 +54,20 @@ function Timer(){
                     event.preventDefault();
                     if (document.activeElement === resetButtonRef.current) {
                         startButtonRef.current.focus();
-                    } else {
+                    } else if (document.activeElement === settingsButtonRef.current) {
                         resetButtonRef.current.focus();
+                    } else {
+                        settingsButtonRef.current.focus();
                     }
                     break;
                 case 'ArrowRight':
                     event.preventDefault();
-                    if (document.activeElement === startButtonRef.current) {
-                        resetButtonRef.current.focus();
-                    } else {
+                    if (document.activeElement === resetButtonRef.current) {
+                        settingsButtonRef.current.focus();
+                    } else if (document.activeElement === settingsButtonRef.current) {
                         startButtonRef.current.focus();
+                    } else {
+                        resetButtonRef.current.focus();
                     }
                     break;
             }
@@ -78,19 +87,22 @@ function Timer(){
         };
     }, [isRunning]);
 
-    function startTimer(){
+    function startTimer() {
         setIsRunning(true);
     }
-    function resetTimer(){
+    function resetTimer() {
         setIsRunning(false);
         setTime(0);
         startTimeRef.current = 0;
     }
-    function stopTimer(){
+    function stopTimer() {
         setIsRunning(false);
     }
+    function countdown() {
 
-    function formatTime(time){
+    }
+
+    function formatTime(time) {
         const totalSeconds = Math.floor(time / 1000);
         const hours = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
         const minutes = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
@@ -104,20 +116,26 @@ function Timer(){
             <div className="card">
                 <div className="display">{formatTime(time)}</div>
                 <div className="controls">
-                    <button 
+                    <button
+                        ref={settingsButtonRef}
+                        onClick={countdown}
+                        className={`settings_button ${pressedButton === 'settings' ? 'space-pressed' : ''}`}
+                    >
+                        Set
+                    </button>
+                    <button
                         ref={startButtonRef}
                         onClick={isRunning ? stopTimer : startTimer}
                         className={pressedButton === 'start' ? 'space-pressed' : ''}
                     >
                         {isRunning ? "Stop" : "Start"}
                     </button>
-                    <button 
+                    <button
                         ref={resetButtonRef}
-                        onClick={resetTimer} 
-                        className={`reset_button ${pressedButton === 'reset' ? 'space-pressed' : ''}`} 
-                        disabled={time === 0 && !isRunning}
+                        onClick={resetTimer}
+                        className={`reset_button ${pressedButton === 'reset' ? 'space-pressed' : ''}`}
                     >
-                        Reset
+                        Clear
                     </button>
                 </div>
             </div>

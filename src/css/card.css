@@ -57,6 +57,17 @@
     width: 100px;
     height: 100px;
     margin-left: 2px;
+    margin-right: 2px;
+    background-color: #ffffff;
+    color: #333;
+    transition: background-color 0.3s;
+}
+
+.controls .settings_button {
+    width: 100px;
+    height: 100px;
+    margin-left: 2px;
+    margin-right: 2px;
     background-color: #ffffff;
     color: #333;
     transition: background-color 0.3s;
@@ -79,4 +90,10 @@
 
 .space-pressed {
     animation: spacePress 0.2s ease;
+}
+
+.gear-icon {
+    width: 32px;
+    height: 32px;
+    filter: brightness(0);
 }

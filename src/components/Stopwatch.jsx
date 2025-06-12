@@ -116,7 +116,7 @@ function Stopwatch(){
                         onClick={resetTimer} 
                         className={`reset_button ${pressedButton === 'reset' ? 'space-pressed' : ''}`} 
                     >
-                        Reset
+                        Clear
                     </button>
                 </div>
             </div>
