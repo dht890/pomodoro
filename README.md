@@ -100,17 +100,8 @@ git commit -m "Add login page with form and basic validation"
 
 ---
 
-## ✅ 5. Pull the Latest Main (Optional but Recommended)
 
-Rebase your feature branch with the latest `main`:
-
-```bash
-git pull origin main --rebase
-```
-
----
-
-## ✅ 6. Push Your Feature Branch
+## ✅ 5. Push Your Feature Branch
 
 Upload your branch to the remote:
 
@@ -120,7 +111,7 @@ git push origin feature/your-feature-name
 
 ---
 
-## ✅ 7. Open a Pull Request (PR)
+## ✅ 6. Open a Pull Request (PR)
 
 On GitHub/GitLab/Bitbucket:
 - Open a PR from your feature branch into `main`
@@ -128,7 +119,7 @@ On GitHub/GitLab/Bitbucket:
 
 ---
 
-## ✅ 8. Review and Fix Issues
+## ✅ 7. Review and Fix Issues
 
 Respond to feedback, make changes, and push them:
 
@@ -140,7 +131,7 @@ git push
 
 ---
 
-## ✅ 9. Merge the PR
+## ✅ 8. Merge the PR
 
 Once approved, merge it into `main`:
 
@@ -153,13 +144,24 @@ git push origin main
 
 ---
 
-## ✅ 10. Delete the Feature Branch
+## ✅ 9. Delete the Feature Branch
 
 Clean up your local and remote branches:
 
 ```bash
 git branch -d feature/your-feature-name
 git push origin --delete feature/your-feature-name
+```
+
+---
+
+## ✅ 10. Start from the Main Branch
+
+Make sure you're on the `main` (or `master`) branch and it's up to date:
+
+```bash
+git checkout main
+git pull origin main
 ```
 
 ---
