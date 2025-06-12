@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import gearIcon from '../assets/gear.svg';
+import { useNavigate } from 'react-router-dom';
 import '../css/card.css'
 
 function Timer() {
@@ -11,6 +11,7 @@ function Timer() {
     const settingsButtonRef = useRef(null);
     const intervalRef = useRef(null);
     const startTimeRef = useRef(0);
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (isRunning) {
@@ -40,7 +41,7 @@ function Timer() {
                         resetTimer();
                     } else if (document.activeElement === settingsButtonRef.current) {
                         setPressedButton('settings');
-                        countdown();
+                        navigate('/settings');
                     } else if (document.activeElement === startButtonRef.current) {
                         setPressedButton('start');
                         if (isRunning) {
@@ -87,6 +88,10 @@ function Timer() {
         };
     }, [isRunning]);
 
+    useEffect(() => {
+        startButtonRef.current?.focus();
+    }, []);
+
     function startTimer() {
         setIsRunning(true);
     }
@@ -118,7 +123,7 @@ function Timer() {
                 <div className="controls">
                     <button
                         ref={settingsButtonRef}
-                        onClick={countdown}
+                        onClick={() => navigate('/settings')}
                         className={`settings_button ${pressedButton === 'settings' ? 'space-pressed' : ''}`}
                     >
                         Set
