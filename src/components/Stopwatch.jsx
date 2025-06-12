@@ -55,10 +55,10 @@ function Stopwatch(){
                     break;
                 case 'ArrowRight':
                     event.preventDefault();
-                    if (document.activeElement === startButtonRef.current) {
-                        resetButtonRef.current.focus();
-                    } else {
+                    if (document.activeElement === resetButtonRef.current) {
                         startButtonRef.current.focus();
+                    } else {
+                        resetButtonRef.current.focus();
                     }
                     break;
             }
@@ -115,7 +115,6 @@ function Stopwatch(){
                         ref={resetButtonRef}
                         onClick={resetTimer} 
                         className={`reset_button ${pressedButton === 'reset' ? 'space-pressed' : ''}`} 
-                        disabled={time === 0 && !isRunning}
                     >
                         Reset
                     </button>

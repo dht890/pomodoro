@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import '../css/Navbar.css';
 import clockIcon from '../assets/clock.svg';
-import timerIcon from '../assets/timer.svg';
+import hourglassIcon from '../assets/hourglass.svg';
 import stopwatchIcon from '../assets/stopwatch.svg';
 import settingsIcon from '../assets/gear.svg';
 
@@ -9,14 +9,14 @@ function Navbar() {
     return (
         <nav className="navbar">
             <div className="navbar-brand">
-                <Link to="/timer">
-                    <img src={clockIcon} alt="Timer Icon" className="brand-icon" />
+                <Link to="/">
+                    <img src={clockIcon} alt="Clock" className="brand-icon" />
                     Productivity Timer
                 </Link>
             </div>
             <div className="navbar-links">
                 <Link to="/timer" className="nav-link">
-                    <img src={timerIcon} alt="Timer" className="nav-icon" />
+                    <img src={hourglassIcon} alt="Timer" className="nav-icon" />
                     Timer
                 </Link>
                 <Link to="/stopwatch" className="nav-link">
