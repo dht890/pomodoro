@@ -1,5 +1,6 @@
 import Stopwatch from './components/Stopwatch.jsx'
 import Timer from './components/Timer.jsx'
+import Settings from './components/Settings.jsx'
 import Navbar from './components/Navbar.jsx'
 import { Routes, Route } from 'react-router-dom'
 import './css/App.css'
@@ -13,7 +14,7 @@ function App() {
           <Route path="/" element={<Timer />} />
           <Route path="/stopwatch" element={<Stopwatch />} />
           <Route path="/timer" element={<Timer />} />
-          <Route path="/settings" element={<div className="page">Settings Page</div>} />
+          <Route path="/settings" element={<Settings />} />
         </Routes>
       </main>
     </>

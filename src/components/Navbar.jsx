@@ -23,10 +23,6 @@ function Navbar() {
                     <img src={stopwatchIcon} alt="Stopwatch" className="nav-icon" />
                     Stopwatch
                 </Link>
-                <Link to="/settings" className="nav-link">
-                    <img src={settingsIcon} alt="Settings" className="nav-icon" />
-                    Settings
-                </Link>
             </div>
         </nav>
     );
