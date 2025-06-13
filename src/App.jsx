@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import Stopwatch from './components/Stopwatch.jsx'
 import Timer from './components/Timer.jsx'
 import Settings from './components/Settings.jsx'
@@ -6,15 +7,17 @@ import { Routes, Route } from 'react-router-dom'
 import './css/App.css'
 
 function App() {
+  const [duration, setDuration] = useState(5 * 60 * 1000); // Default 5 minutes
+
   return (
     <>
       <Navbar />
       <main>
         <Routes>
-          <Route path="/" element={<Timer />} />
+          <Route path="/" element={<Timer duration={duration} />} />
           <Route path="/stopwatch" element={<Stopwatch />} />
-          <Route path="/timer" element={<Timer duration={5*1000} />} />
-          <Route path="/settings" element={<Settings />} />
+          <Route path="/timer" element={<Timer duration={duration} />} />
+          <Route path="/settings" element={<Settings setDuration={setDuration} />} />
         </Routes>
       </main>
     </>
