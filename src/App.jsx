@@ -13,7 +13,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Timer />} />
           <Route path="/stopwatch" element={<Stopwatch />} />
-          <Route path="/timer" element={<Timer />} />
+          <Route path="/timer" element={<Timer duration={5*1000} />} />
           <Route path="/settings" element={<Settings />} />
         </Routes>
       </main>

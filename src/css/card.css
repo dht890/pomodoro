@@ -45,7 +45,7 @@
     outline: none;
     transform: scale(1.02);
     transition: transform 0.3s ease;
-    box-shadow: 0 0 10px #878787;
+    box-shadow: 0 0 15px #dbdbdb;
 }
 
 .controls button:hover{
