@@ -12,15 +12,22 @@ function Stopwatch(){
 
     useEffect(() => {
         if (isRunning) {
+            //1. Calculate and store the start time
             startTimeRef.current = Date.now() - time;
+            //2. Set up the interval to update the time
             intervalRef.current = setInterval(() => {
+                //3. Calculate the current time
                 const currentTime = Date.now() - startTimeRef.current;
+                //4. Update the time state
                 setTime(currentTime);
             }, 10);
+        //5. Stop condition
         } else if (intervalRef.current) {
+            //6. Clear the interval when the stopwatch is stopped
             clearInterval(intervalRef.current);
             intervalRef.current = null;
         }
+        //7. Clean up the interval when the component unmounts
         return () => {
             if (intervalRef.current) {
                 clearInterval(intervalRef.current);
