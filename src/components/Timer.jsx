@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../css/card.css'
+import bellIcon from '../assets/bell.svg';
+import alarmSound from '../assets/reels.mp3';
 
 function CountdownTimer({ duration }) {
     const [time, setTime] = useState(duration);
@@ -11,6 +13,7 @@ function CountdownTimer({ duration }) {
     const resetButtonRef = useRef(null);
     const settingsButtonRef = useRef(null);
     const intervalRef = useRef(null);
+    const audioRef = useRef(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -29,6 +32,7 @@ function CountdownTimer({ duration }) {
                         clearInterval(intervalRef.current);
                         setIsRunning(false);
                         setBaseTime(duration); // Reset baseTime for next start
+                        playSound();
                         return 0;
                     }
                     return newTime;
@@ -123,6 +127,11 @@ function CountdownTimer({ duration }) {
         setIsRunning(false);
         setTime(duration);
         setBaseTime(duration);
+        if (audioRef.current) {
+            audioRef.current.pause();
+            audioRef.current.currentTime = 0;
+            audioRef.current = null;
+        }
     }
 
     function formatTime(time) {
@@ -130,13 +139,38 @@ function CountdownTimer({ duration }) {
         const hours = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
         const minutes = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
         const seconds = String(totalSeconds % 60).padStart(2, '0');
-        const milliseconds = String(Math.floor(time % 1000)).padStart(3, '0');
-        return `${hours}:${minutes}:${seconds}.${milliseconds}`;
+        const milliseconds = String(Math.floor((time % 1000) / 10)).padStart(2, '0');
+        return `${hours}:${minutes}:${seconds}:${milliseconds}`;
+    }
+
+    function formatEndTime(time) {
+        const end = new Date(Date.now() + time);
+        let hours = end.getHours();
+        const minutes = end.getMinutes();
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        if (hours === 0) hours = 12;
+        return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')} ${ampm}`;
+    }
+
+    function playSound() {
+        if (audioRef.current) {
+            audioRef.current.pause();
+            audioRef.current.currentTime = 0;
+        }
+        const audio = new Audio(alarmSound);
+        audio.loop = true;
+        audio.play();
+        audioRef.current = audio;
     }
 
     return (
         <div className="card">
-            <div className='display'>{formatTime(time)}</div>
+            <div className="end-time">
+                <img src={bellIcon} alt="Timer" className="bell-icon" />
+                {formatEndTime(time)}
+            </div>
+            <div className='timer-display'>{formatTime(time)}</div>
             <div className='controls'>
                 <button
                     ref={settingsButtonRef}
@@ -149,15 +183,17 @@ function CountdownTimer({ duration }) {
                     ref={startButtonRef}
                     onClick={isRunning ? stopTimer : startTimer}
                     className={pressedButton === 'start' ? 'space-pressed' : ''}
+                    disabled={time <= 0}
                 >
-                    {time <= 0 ? "Reset" : (isRunning ? "Stop" : "Start")}
+                    {(isRunning ? "Stop" : "Start")}
+
                 </button>
                 <button 
                     ref={resetButtonRef}
                     onClick={resetTimer}
                     className={`reset_button ${pressedButton === 'reset' ? 'space-pressed' : ''}`}
                 >
-                    Cancel
+                    Reset
                 </button>
             </div>
         </div>
