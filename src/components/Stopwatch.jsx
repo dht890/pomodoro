@@ -109,7 +109,7 @@ function Stopwatch(){
     return (
         <>
             <div className="card">
-                <div className="display">{formatTime(time)}</div>
+                <div className="stopwatch-display">{formatTime(time)}</div>
                 <div className="controls">
                     <button 
                         ref={startButtonRef}

@@ -7,7 +7,7 @@ import { Routes, Route } from 'react-router-dom'
 import './css/App.css'
 
 function App() {
-  const [duration, setDuration] = useState(5 * 60 * 1000); // Default 5 minutes
+  const [duration, setDuration] = useState(10 * 60 * 1000); // Default 10 minutes
 
   return (
     <>

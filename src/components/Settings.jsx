@@ -13,6 +13,7 @@ function formatTimeInput(raw) {
 function Settings({ setDuration }) {
     const navigate = useNavigate();
     const [raw, setRaw] = useState('');
+    const [error, setError] = useState('');
     const inputRef = useRef(null);
     const saveButtonRef = useRef(null);
     const clearButtonRef = useRef(null);
@@ -38,9 +39,11 @@ function Settings({ setDuration }) {
     const handleKeyDown = (e) => {
         if (e.key >= '0' && e.key <= '9') {
             if (raw.length < 6) setRaw(raw + e.key);
+            setError('');
             e.preventDefault();
         } else if (e.key === 'Backspace') {
             setRaw(raw.slice(0, -1));
+            setError('');
             e.preventDefault();
         } else if (e.key === 'Enter') {
             handleSave();
@@ -63,16 +66,23 @@ function Settings({ setDuration }) {
         let s = parseInt(digits.slice(4, 6)) || 0;
         const duration = (h * 3600 + m * 60 + s) * 1000;
         if (duration > 0) {
+            setError('');
             setDuration(duration);
             navigate('/timer');
+        } else {
+            setError('Time cannot be set to zero');
         }
     };
 
-    const handleClear = () => setRaw('');
+    const handleClear = () => {
+        setRaw('');
+        setError('');
+    };
 
     return (
         <div className="card">
-            <div className="display">
+            <h2>Type to set duration</h2>
+            <div className="settings-display">
                 <input
                     ref={inputRef}
                     type="text"
@@ -83,6 +93,9 @@ function Settings({ setDuration }) {
                     maxLength={8}
                     placeholder="00:00:00"
                 />
+            </div>
+            <div className="error-message">
+                {error ? error : " "}
             </div>
             <div className="controls">
                 <button
