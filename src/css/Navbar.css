@@ -1,4 +1,5 @@
 .navbar {
+    font-family: monospace, Comic Sans MS;
     background-color: #1a3b1d;
     padding: 1rem 2rem;
     display: flex;
@@ -17,7 +18,6 @@
     text-decoration: none;
     font-size: 1.5rem;
     font-weight: bold;
-    font-family: Comic Sans MS;
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -42,8 +42,7 @@
 .nav-link {
     color: #fff;
     text-decoration: none;
-    font-size: 1.1rem;
-    font-family: Comic Sans MS;
+    font-size: 1.5rem;
     font-weight: bold;
     padding: 0.5rem 1rem;
     border-radius: 5px;
@@ -74,6 +73,7 @@ main {
 }
 
 .credits {
+    font-family: monospace;
     position: fixed;
     bottom: 0;
     right: 0;
@@ -81,15 +81,31 @@ main {
     font-size: 1rem;
     color: #fff;
     opacity: 0.6;
-    display: flex;
-    align-items: center; /* Vertically center items */
-    justify-content: center; /* Horizontally center items (optional) */
-    gap: 0.25em;
+    display: block;
+    text-align: right;
+}
+
+.credits .inputs {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: block;
+    text-align: center;
+    font-size: 1.2rem;
+    opacity: 0.8;
+}
+
+.credits .inputs p {
+    font-size: 1em;
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
 .credits img {
-    height: 25px;
+    height: 23px;
     width: auto;
     display: inline-block;
     vertical-align: middle;
+    margin-left: 5px;
 }
