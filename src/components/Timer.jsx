@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../css/card.css'
 import bellIcon from '../assets/bell.svg';
 import alarmSound from '../assets/reels.mp3';
+import '../css/card.css'
 
 function CountdownTimer({ duration }) {
     const [time, setTime] = useState(duration);
@@ -42,11 +42,6 @@ function CountdownTimer({ duration }) {
             clearInterval(intervalRef.current);
             intervalRef.current = null;
         }
-        return () => {
-            if (intervalRef.current) {
-                clearInterval(intervalRef.current);
-            }
-        };
     }, [isRunning, baseTime, duration]);
 
     useEffect(() => {
@@ -108,6 +103,7 @@ function CountdownTimer({ duration }) {
         startButtonRef.current?.focus();
     }, []);
 
+    
     function startTimer() {
         if (time <= 0) {
             setTime(duration);
@@ -123,15 +119,19 @@ function CountdownTimer({ duration }) {
         setIsRunning(false);
     }
 
-    function resetTimer() {
-        setIsRunning(false);
-        setTime(duration);
-        setBaseTime(duration);
+    const cleanupAudio = () => {
         if (audioRef.current) {
             audioRef.current.pause();
             audioRef.current.currentTime = 0;
             audioRef.current = null;
         }
+    };
+
+    function resetTimer() {
+        setIsRunning(false);
+        setTime(duration);
+        setBaseTime(duration);
+        cleanupAudio();
     }
 
     function formatTime(time) {
@@ -163,6 +163,25 @@ function CountdownTimer({ duration }) {
         audio.play();
         audioRef.current = audio;
     }
+    
+    // Add cleanup effect that runs before navigation
+    useEffect(() => {
+        const cleanupAudio = () => {
+            if (audioRef.current) {
+                audioRef.current.pause();
+                audioRef.current.currentTime = 0;
+                audioRef.current = null;
+            }
+        };
+
+        // Clean up audio before navigation
+        window.addEventListener('popstate', cleanupAudio);
+        
+        return () => {
+            window.removeEventListener('popstate', cleanupAudio);
+            cleanupAudio(); // Also clean up when component unmounts
+        };
+    }, []);
 
     return (
         <div className="card">

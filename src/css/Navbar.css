@@ -72,3 +72,24 @@
 main {
     padding-top: 80px;
 }
+
+.credits {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    margin: 10px;
+    font-size: 1rem;
+    color: #fff;
+    opacity: 0.6;
+    display: flex;
+    align-items: center; /* Vertically center items */
+    justify-content: center; /* Horizontally center items (optional) */
+    gap: 0.25em;
+}
+
+.credits img {
+    height: 25px;
+    width: auto;
+    display: inline-block;
+    vertical-align: middle;
+}
