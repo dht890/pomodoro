@@ -67,6 +67,9 @@ function CountdownTimer({ duration }) {
                 case 'ArrowLeft':
                     event.preventDefault();
                     if (document.activeElement === resetButtonRef.current) {
+                        if (startButtonRef.current.disabled){
+                            settingsButtonRef.current.focus()
+                        }
                         startButtonRef.current.focus();
                     } else if (document.activeElement === settingsButtonRef.current) {
                         resetButtonRef.current.focus();
@@ -79,6 +82,9 @@ function CountdownTimer({ duration }) {
                     if (document.activeElement === resetButtonRef.current) {
                         settingsButtonRef.current.focus();
                     } else if (document.activeElement === settingsButtonRef.current) {
+                        if (startButtonRef.current.disabled){
+                            resetButtonRef.current.focus();
+                        }
                         startButtonRef.current.focus();
                     } else {
                         resetButtonRef.current.focus();
@@ -103,7 +109,7 @@ function CountdownTimer({ duration }) {
         startButtonRef.current?.focus();
     }, []);
 
-    
+
     function startTimer() {
         if (time <= 0) {
             setTime(duration);
@@ -163,7 +169,7 @@ function CountdownTimer({ duration }) {
         audio.play();
         audioRef.current = audio;
     }
-    
+
     // Add cleanup effect that runs before navigation
     useEffect(() => {
         const cleanupAudio = () => {
@@ -176,7 +182,7 @@ function CountdownTimer({ duration }) {
 
         // Clean up audio before navigation
         window.addEventListener('popstate', cleanupAudio);
-        
+
         return () => {
             window.removeEventListener('popstate', cleanupAudio);
             cleanupAudio(); // Also clean up when component unmounts
@@ -198,7 +204,7 @@ function CountdownTimer({ duration }) {
                 >
                     Set
                 </button>
-                <button 
+                <button
                     ref={startButtonRef}
                     onClick={isRunning ? stopTimer : startTimer}
                     className={pressedButton === 'start' ? 'space-pressed' : ''}
@@ -207,7 +213,7 @@ function CountdownTimer({ duration }) {
                     {(isRunning ? "Stop" : "Start")}
 
                 </button>
-                <button 
+                <button
                     ref={resetButtonRef}
                     onClick={resetTimer}
                     className={`reset_button ${pressedButton === 'reset' ? 'space-pressed' : ''}`}

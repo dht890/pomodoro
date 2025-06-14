@@ -27,9 +27,9 @@ function Navbar() {
             <div className='credits'>
                 <div className='inputs'>
                     <p>arrow keys - navigate</p>
-                    <p>space/enter - start/stop</p>
+                    <p>space/enter - confirm</p>
                 </div>
-                Created in React
+                Created with React
                 <img src={reactIcon} />
             </div>
         </nav>
