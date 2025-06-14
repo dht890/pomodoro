@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
-import '../css/Navbar.css';
 import clockIcon from '../assets/clock.svg';
 import hourglassIcon from '../assets/hourglass.svg';
 import stopwatchIcon from '../assets/stopwatch.svg';
-import settingsIcon from '../assets/gear.svg';
+import reactIcon from '../assets/react.svg'
+import '../css/Navbar.css';
 
 function Navbar() {
     return (
@@ -23,6 +23,10 @@ function Navbar() {
                     <img src={stopwatchIcon} alt="Stopwatch" className="nav-icon" />
                     Stopwatch
                 </Link>
+            </div>
+            <div className='credits'>
+                Created in React
+                <img src={reactIcon}/>
             </div>
         </nav>
     );
