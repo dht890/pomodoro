@@ -1,12 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
 import '../css/card.css'
 
-function Stopwatch(){
+function Stopwatch() {
     const [time, setTime] = useState(0);
     const [isRunning, setIsRunning] = useState(false);
     const [pressedButton, setPressedButton] = useState(null);
     const startButtonRef = useRef(null);
     const resetButtonRef = useRef(null);
+    const lapButtonRef = useRef(null);
     const intervalRef = useRef(null);
     const startTimeRef = useRef(0);
 
@@ -21,7 +22,7 @@ function Stopwatch(){
                 //4. Update the time state
                 setTime(currentTime);
             }, 10);
-        //5. Stop condition
+            //5. Stop condition
         } else if (intervalRef.current) {
             //6. Clear the interval when the stopwatch is stopped
             clearInterval(intervalRef.current);
@@ -37,13 +38,16 @@ function Stopwatch(){
 
     useEffect(() => {
         const handleKeyDown = (event) => {
-            switch(event.code) {
+            switch (event.code) {
                 case 'Space':
                     event.preventDefault();
                     if (document.activeElement === resetButtonRef.current) {
                         setPressedButton('reset');
                         resetTimer();
-                    } else {
+                    } else if (document.activeElement === lapButtonRef.current) {
+                        setPressedButton('lap')
+                        lapTimer();
+                    } else if (document.activeElement === startButtonRef.current) {
                         setPressedButton('start');
                         if (isRunning) {
                             stopTimer();
@@ -56,6 +60,8 @@ function Stopwatch(){
                     event.preventDefault();
                     if (document.activeElement === resetButtonRef.current) {
                         startButtonRef.current.focus();
+                    } else if (document.activeElement === startButtonRef.current) {
+                        lapButtonRef.current.focus();
                     } else {
                         resetButtonRef.current.focus();
                     }
@@ -63,6 +69,8 @@ function Stopwatch(){
                 case 'ArrowRight':
                     event.preventDefault();
                     if (document.activeElement === resetButtonRef.current) {
+                        lapButtonRef.current.focus();
+                    } else if (document.activeElement === lapButtonRef.current) {
                         startButtonRef.current.focus();
                     } else {
                         resetButtonRef.current.focus();
@@ -85,19 +93,23 @@ function Stopwatch(){
         };
     }, [isRunning]);
 
-    function startTimer(){
+    function startTimer() {
         setIsRunning(true);
     }
-    function resetTimer(){
+    function resetTimer() {
         setIsRunning(false);
         setTime(0);
         startTimeRef.current = 0;
     }
-    function stopTimer(){
+    function stopTimer() {
         setIsRunning(false);
     }
 
-    function formatTime(time){
+    function lapTimer() {
+
+    }
+
+    function formatTime(time) {
         const totalSeconds = Math.floor(time / 1000);
         const hours = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
         const minutes = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
@@ -108,23 +120,32 @@ function Stopwatch(){
 
     return (
         <>
-            <div className="card">
-                <div className="stopwatch-display">{formatTime(time)}</div>
-                <div className="controls">
-                    <button 
-                        ref={startButtonRef}
-                        onClick={isRunning ? stopTimer : startTimer}
-                        className={pressedButton === 'start' ? 'space-pressed' : ''}
-                    >
-                        {isRunning ? "Stop" : "Start"}
-                    </button>
-                    <button 
-                        ref={resetButtonRef}
-                        onClick={resetTimer} 
-                        className={`reset_button ${pressedButton === 'reset' ? 'space-pressed' : ''}`} 
-                    >
-                        Clear
-                    </button>
+            <div className='stopwatch-page'>
+                <div className="card">
+                    <div className='splits'></div>
+                    <div className="stopwatch-display">{formatTime(time)}</div>
+                    <div className="controls">
+                        <button
+                            ref={lapButtonRef}
+                            onClick={lapTimer}
+                            className={`small_button ${pressedButton === 'lap' ? 'space-pressed' : ''}`}>
+                            Lap
+                        </button>
+                        <button
+                            ref={startButtonRef}
+                            onClick={isRunning ? stopTimer : startTimer}
+                            className={pressedButton === 'start' ? 'space-pressed' : ''}
+                        >
+                            {isRunning ? "Stop" : "Start"}
+                        </button>
+                        <button
+                            ref={resetButtonRef}
+                            onClick={resetTimer}
+                            className={`small_button ${pressedButton === 'reset' ? 'space-pressed' : ''}`}
+                        >
+                            Clear
+                        </button>
+                    </div>
                 </div>
             </div>
         </>
