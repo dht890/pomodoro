@@ -30,6 +30,10 @@
     transition: 0.3s ease;
 }
 
+.navbar.teal .navbar-brand a:hover {
+    background-color: rgb(56, 133, 138);
+}
+
 .brand-icon {
     width: 32px;
     height: 32px;
@@ -68,6 +72,10 @@
 
 .nav-link:hover {
     background-color: #255429;
+}
+
+.navbar.teal .nav-link:hover {
+    background-color: rgb(56, 133, 138);
 }
 
 .nav-link:hover .nav-icon {

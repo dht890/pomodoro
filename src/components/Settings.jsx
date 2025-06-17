@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import styles from '../css/settings.module.css';
+import { useTheme } from '../contexts/ThemeContext';
+import { useMode } from '../contexts/ModeContext';
 
 function formatTimeInput(raw) {
     let digits = raw.padStart(6, '0');
@@ -18,6 +20,8 @@ function Settings({ setDuration }) {
     const saveButtonRef = useRef(null);
     const clearButtonRef = useRef(null);
     const [pressedButton, setPressedButton] = useState(null);
+    const { themeColor, setThemeColor } = useTheme();
+    const { mode, toggleMode } = useMode();
 
     useEffect(() => {
         inputRef.current?.focus();
@@ -79,8 +83,28 @@ function Settings({ setDuration }) {
         setError('');
     };
 
+    useEffect(() => {
+        if (themeColor === 'teal') {
+            document.body.style.backgroundColor = 'rgb(32, 100, 105)'; //darker teal
+        } else if (themeColor === 'green') {
+            document.body.style.backgroundColor = 'rgb(26, 59, 29)'; //darker green
+        } 
+    }, [themeColor]);
+
     return (
-        <div className="card">
+        <div className={`card ${themeColor}`}>
+            <div className={styles.pomodoro}>
+                <button 
+                    onClick={() => toggleMode('work')}
+                    className={`${styles.pomodoro_button} ${mode === 'work' ? styles.active : ''}`}>
+                    Work
+                </button>
+                <button 
+                    onClick={() => toggleMode('break')}
+                    className={`${styles.pomodoro_button} ${mode === 'break' ? styles.active : ''}`}>
+                    Break
+                </button>
+            </div>
             <h2>Type to set duration</h2>
             <div className={styles.settings_display}>
                 <input

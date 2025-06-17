@@ -3,11 +3,14 @@ import clockIcon from '../assets/clock.svg';
 import hourglassIcon from '../assets/hourglass.svg';
 import stopwatchIcon from '../assets/stopwatch.svg';
 import reactIcon from '../assets/react.svg'
+import { useTheme } from '../contexts/ThemeContext';
 import '../css/Navbar.css';
 
 function Navbar() {
+    const { themeColor } = useTheme();
+    
     return (
-        <nav className="navbar">
+        <nav className={`navbar ${themeColor}`}>
             <div className="navbar-brand">
                 <Link to="/">
                     <img src={clockIcon} alt="Clock" className="brand-icon" />

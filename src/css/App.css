@@ -25,6 +25,21 @@
   justify-content: flex-start;
   gap: 0;
 }
+.card h2 {
+  margin-top: 20px;    
+}
+/* Themes */
+.card.teal {
+  transition: all 0.3s ease;
+  background-color: rgb(56, 133, 138);
+}
+.navbar.teal {
+  background-color: rgb(32, 100, 105);
+}
+.card.green {
+  transition: all 0.3s ease;
+  background-color: #255429;
+}
 
 .controls {
   display: flex;

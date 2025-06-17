@@ -3,12 +3,20 @@ import { useNavigate } from 'react-router-dom';
 import bellIcon from '../assets/bell.svg';
 import alarmSound from '../assets/reels.mp3';
 import styles from '../css/timer.module.css'
+import { useTheme } from '../contexts/ThemeContext';
+import { useMode } from '../contexts/ModeContext';
+import { useTimer } from '../contexts/TimerContext';
 
-function CountdownTimer({ duration }) {
-    const [time, setTime] = useState(duration);
+function CountdownTimer() {
+    const { mode, toggleMode } = useMode();
+    const { themeColor } = useTheme();
+    const { getCurrentDuration } = useTimer();
+    
+    const currentDuration = getCurrentDuration(mode);
+    const [time, setTime] = useState(currentDuration);
     const [isRunning, setIsRunning] = useState(false);
     const [pressedButton, setPressedButton] = useState(null);
-    const [baseTime, setBaseTime] = useState(duration);
+    const [baseTime, setBaseTime] = useState(currentDuration);
     const startButtonRef = useRef(null);
     const resetButtonRef = useRef(null);
     const settingsButtonRef = useRef(null);
@@ -16,10 +24,13 @@ function CountdownTimer({ duration }) {
     const audioRef = useRef(null);
     const navigate = useNavigate();
 
+    // Update timer when mode changes
     useEffect(() => {
-        setTime(duration);
-        setBaseTime(duration);
-    }, [duration]);
+        const newDuration = getCurrentDuration(mode);
+        setTime(newDuration);
+        setBaseTime(newDuration);
+        setIsRunning(false);
+    }, [mode, getCurrentDuration]);
 
     useEffect(() => {
         if (isRunning && time > 0) {
@@ -31,8 +42,10 @@ function CountdownTimer({ duration }) {
                     if (newTime <= 0) {
                         clearInterval(intervalRef.current);
                         setIsRunning(false);
-                        setBaseTime(duration); // Reset baseTime for next start
                         playSound();
+                        // Switch modes
+                        const nextMode = mode === 'work' ? 'break' : 'work';
+                        toggleMode(nextMode);
                         return 0;
                     }
                     return newTime;
@@ -42,7 +55,7 @@ function CountdownTimer({ duration }) {
             clearInterval(intervalRef.current);
             intervalRef.current = null;
         }
-    }, [isRunning, baseTime, duration]);
+    }, [isRunning, baseTime, mode, toggleMode]);
 
     useEffect(() => {
         const handleKeyDown = (event) => {
@@ -112,17 +125,21 @@ function CountdownTimer({ duration }) {
 
     function startTimer() {
         if (time <= 0) {
-            setTime(duration);
-            setBaseTime(duration);
+            const newDuration = getCurrentDuration(mode);
+            setTime(newDuration);
+            setBaseTime(newDuration);
             setIsRunning(true);
+            cleanupAudio();
         } else {
             setBaseTime(time);
             setIsRunning(true);
+            cleanupAudio();
         }
     }
 
     function stopTimer() {
         setIsRunning(false);
+        cleanupAudio();
     }
 
     const cleanupAudio = () => {
@@ -135,8 +152,9 @@ function CountdownTimer({ duration }) {
 
     function resetTimer() {
         setIsRunning(false);
-        setTime(duration);
-        setBaseTime(duration);
+        const newDuration = getCurrentDuration(mode);
+        setTime(newDuration);
+        setBaseTime(newDuration);
         cleanupAudio();
     }
 
@@ -189,43 +207,55 @@ function CountdownTimer({ duration }) {
         };
     }, []);
 
-    return (
-            <div className='card'>
-                <div className={styles.pomodoro}>
-                    <button>Work</button>
-                    <button>Break</button>
-                </div>
-                <div className={styles.end_time}>
-                    <img src={bellIcon} alt="Timer" className={styles.bell_icon}/>
-                    {formatEndTime(time)}
-                </div>
-                <div className={styles.timer_display}>{formatTime(time)}</div>
-                <div className='controls'>
-                    <button
-                        ref={settingsButtonRef}
-                        onClick={() => navigate('/settings')}
-                        className={`small_button ${pressedButton === 'settings' ? 'space-pressed' : ''}`}
-                    >
-                        Set
-                    </button>
-                    <button
-                        ref={startButtonRef}
-                        onClick={isRunning ? stopTimer : startTimer}
-                        className={pressedButton === 'start' ? 'space-pressed' : ''}
-                        disabled={time <= 0}
-                    >
-                        {(isRunning ? "Stop" : "Start")}
+    useEffect(() => {
+        if (themeColor === 'teal') {
+            document.body.style.backgroundColor = 'rgb(32, 100, 105)'; //darker teal
+        } else if (themeColor === 'green') {
+            document.body.style.backgroundColor = 'rgb(26, 59, 29)'; //darker green
+        } 
+    }, [themeColor]);
 
-                    </button>
-                    <button
-                        ref={resetButtonRef}
-                        onClick={resetTimer}
-                        className={`small_button ${pressedButton === 'reset' ? 'space-pressed' : ''}`}
-                    >
-                        Reset
-                    </button>
-                </div>
+    return (
+        <div className={`card ${themeColor}`}>
+            <div className={styles.pomodoro}>
+                <button 
+                    onClick={() => toggleMode('work')}
+                    className={`${styles.pomodoro_button} ${mode === 'work' ? styles.active : ''}`}>
+                    Work
+                </button>
+                <button 
+                    onClick={() => toggleMode('break')}
+                    className={`${styles.pomodoro_button} ${mode === 'break' ? styles.active : ''}`}>
+                    Break
+                </button>
             </div>
+            <div className={styles.end_time}>
+                <img src={bellIcon} alt="Timer" className={styles.bell_icon} />
+                {formatEndTime(time)}
+            </div>
+            <div className={styles.timer_display}>{formatTime(time)}</div>
+            <div className='controls'>
+                <button
+                    ref={settingsButtonRef}
+                    onClick={() => navigate('/settings')}
+                    className={`small_button ${pressedButton === 'settings' ? 'space-pressed' : ''}`}>
+                    Set
+                </button>
+                <button
+                    ref={startButtonRef}
+                    onClick={isRunning ? stopTimer : startTimer}
+                    className={pressedButton === 'start' ? 'space-pressed' : ''}
+                    disabled={time <= 0}>
+                    {(isRunning ? "Stop" : "Start")}
+                </button>
+                <button
+                    ref={resetButtonRef}
+                    onClick={resetTimer}
+                    className={`small_button ${pressedButton === 'reset' ? 'space-pressed' : ''}`}>
+                    Reset
+                </button>
+            </div>
+        </div>
     );
 }
 
