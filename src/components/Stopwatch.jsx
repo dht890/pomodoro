@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef, use } from 'react';
-import '../css/card.css'
+import { useState, useEffect, useRef } from 'react';
+import '../css/card.css';
 
 function Stopwatch() {
     const [time, setTime] = useState(0);
@@ -7,11 +7,27 @@ function Stopwatch() {
     const [splits, setSplits] = useState([]);
     const [lastLapTime, setLastLapTime] = useState(0);
     const [pressedButton, setPressedButton] = useState(null);
+
     const startButtonRef = useRef(null);
     const resetButtonRef = useRef(null);
     const lapButtonRef = useRef(null);
     const intervalRef = useRef(null);
     const startTimeRef = useRef(0);
+    // NEW: refs to keep latest values of time and lastLapTime
+    const timeRef = useRef(0);
+    const lastLapTimeRef = useRef(lastLapTime);
+    const lapCountRef = useRef(0);
+    const splitsRef = useRef([]);
+
+
+    // Keep refs updated
+    useEffect(() => {
+        timeRef.current = time;
+    }, [time]);
+
+    useEffect(() => {
+        lastLapTimeRef.current = lastLapTime;
+    }, [lastLapTime]);
 
     useEffect(() => {
         startButtonRef.current?.focus();
@@ -19,22 +35,17 @@ function Stopwatch() {
 
     useEffect(() => {
         if (isRunning) {
-            //1. Calculate and store the start time
             startTimeRef.current = Date.now() - time;
-            //2. Set up the interval to update the time
             intervalRef.current = setInterval(() => {
-                //3. Calculate the current time
                 const currentTime = Date.now() - startTimeRef.current;
-                //4. Update the time state
+                timeRef.current = currentTime;
                 setTime(currentTime);
             }, 10);
-            //5. Stop condition
         } else if (intervalRef.current) {
-            //6. Clear the interval when the stopwatch is stopped
             clearInterval(intervalRef.current);
             intervalRef.current = null;
         }
-        //7. Clean up the interval when the component unmounts
+
         return () => {
             if (intervalRef.current) {
                 clearInterval(intervalRef.current);
@@ -51,17 +62,14 @@ function Stopwatch() {
                         setPressedButton('reset');
                         resetTimer();
                     } else if (document.activeElement === lapButtonRef.current) {
-                        setPressedButton('lap')
-                        lapTimer();
+                        setPressedButton('lap');
+                        lapTimer(); // uses ref-based logic now
                     } else if (document.activeElement === startButtonRef.current) {
                         setPressedButton('start');
-                        if (isRunning) {
-                            stopTimer();
-                        } else {
-                            startTimer();
-                        }
+                        isRunning ? stopTimer() : startTimer();
                     }
                     break;
+
                 case 'ArrowLeft':
                     event.preventDefault();
                     if (document.activeElement === resetButtonRef.current) {
@@ -72,6 +80,7 @@ function Stopwatch() {
                         resetButtonRef.current.focus();
                     }
                     break;
+
                 case 'ArrowRight':
                     event.preventDefault();
                     if (document.activeElement === resetButtonRef.current) {
@@ -107,26 +116,60 @@ function Stopwatch() {
             setLastLapTime(0);
         }
     }
+
     function resetTimer() {
         setIsRunning(false);
         setTime(0);
         setSplits([]);
         setLastLapTime(0);
         startTimeRef.current = 0;
+
+        // Reset your refs tracking laps and time
+        lastLapTimeRef.current = 0;
+        lapCountRef.current = 0;
+
+        // If you use a ref for the current stopwatch time, reset it too
+        timeRef.current = 0;
+
+        // Clear interval if needed (optional safety)
+        if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+            intervalRef.current = null;
+        }
     }
+
     function stopTimer() {
         setIsRunning(false);
     }
 
     function lapTimer() {
-        const lapTime = time - lastLapTime;
+        const currentTime = timeRef.current;
+        const lapTime = currentTime - lastLapTimeRef.current;
+
+        lapCountRef.current += 1;
+
+        // When newest lap is at index 0, previous lap is at index 1
+        const prevLap = splitsRef.current[1]; // second newest lap
+        const isLongerThanPrev = prevLap ? lapTime > prevLap.time : false;
+
+
         const newLap = {
-            lap: splits.length + 1,
+            lap: lapCountRef.current,
             time: lapTime,
+            isLongerThanPrev,
         };
-        setSplits(prev => [newLap, ...prev]);
-        setLastLapTime(time);
+
+        setSplits(prev => {
+            const newSplits = [newLap, ...prev]; // add newest at front
+            splitsRef.current = newSplits;
+            return newSplits;
+        });
+
+        console.log(`Lap ${lapCountRef.current}: ${lapTime}ms, Previous: ${prevLap?.time}ms, isLongerThanPrev: ${isLongerThanPrev}`);
+        lastLapTimeRef.current = currentTime;
     }
+
+
 
     function formatTime(time) {
         const totalSeconds = Math.floor(time / 1000);
@@ -138,46 +181,54 @@ function Stopwatch() {
     }
 
     return (
-        <>
-            <div className='stopwatch-page'>
-                <div className="card">
-                    <div className="splits">
-                        {splits.map(({ lap, time }, index) => (
-                            <div key={index} className="split-item">
-                                {`Lap ${lap}: ${formatTime(time)}`}
-                            </div>
-                        ))}
-                    </div>
-
-
-
-                    <div className="stopwatch-display">{formatTime(time)}</div>
-                    <div className="controls">
-                        <button
-                            ref={lapButtonRef}
-                            onClick={lapTimer}
-                            className={`small_button ${pressedButton === 'lap' ? 'space-pressed' : ''}`}>
-                            Lap
-                        </button>
-                        <button
-                            ref={startButtonRef}
-                            onClick={isRunning ? stopTimer : startTimer}
-                            className={pressedButton === 'start' ? 'space-pressed' : ''}
+        <div className='stopwatch-page'>
+            <div className="card">
+                <div className="splits">
+                    {splits.map(({ lap, time, isLongerThanPrev }, index) => (
+                        <div
+                            key={index}
+                            className="split-item"
+                            style={{
+                                color: lap === 1
+                                    ? 'white'
+                                    : isLongerThanPrev
+                                        ? 'red'
+                                        : 'green',
+                            }}
                         >
-                            {isRunning ? "Stop" : "Start"}
-                        </button>
-                        <button
-                            ref={resetButtonRef}
-                            onClick={resetTimer}
-                            className={`small_button ${pressedButton === 'reset' ? 'space-pressed' : ''}`}
-                        >
-                            Clear
-                        </button>
-                    </div>
+                            {`Lap ${lap}: ${formatTime(time)}`}
+                        </div>
+                    ))}
+                </div>
+
+                <div className="stopwatch-display">{formatTime(time)}</div>
+
+                <div className="controls">
+                    <button
+                        ref={lapButtonRef}
+                        onClick={lapTimer}
+                        className={`small_button ${pressedButton === 'lap' ? 'space-pressed' : ''}`}
+                    >
+                        Lap
+                    </button>
+                    <button
+                        ref={startButtonRef}
+                        onClick={isRunning ? stopTimer : startTimer}
+                        className={pressedButton === 'start' ? 'space-pressed' : ''}
+                    >
+                        {isRunning ? 'Stop' : 'Start'}
+                    </button>
+                    <button
+                        ref={resetButtonRef}
+                        onClick={resetTimer}
+                        className={`small_button ${pressedButton === 'reset' ? 'space-pressed' : ''}`}
+                    >
+                        Clear
+                    </button>
                 </div>
             </div>
-        </>
-    )
+        </div>
+    );
 }
 
 export default Stopwatch;
