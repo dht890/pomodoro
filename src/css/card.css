@@ -178,6 +178,13 @@
 .card .splits {
     height: 150px;
     width: 500px;
-    border-radius: 10px;
-    background-color: #3d6441;
+    font-size: 1rem;
+    overflow-y: auto;
+    padding: 10px;
+    font-family: monospace;
+}
+
+.split-item {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 4px 0;
 }

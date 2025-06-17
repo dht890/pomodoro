@@ -1,15 +1,21 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, use } from 'react';
 import '../css/card.css'
 
 function Stopwatch() {
     const [time, setTime] = useState(0);
     const [isRunning, setIsRunning] = useState(false);
+    const [splits, setSplits] = useState([]);
+    const [lastLapTime, setLastLapTime] = useState(0);
     const [pressedButton, setPressedButton] = useState(null);
     const startButtonRef = useRef(null);
     const resetButtonRef = useRef(null);
     const lapButtonRef = useRef(null);
     const intervalRef = useRef(null);
     const startTimeRef = useRef(0);
+
+    useEffect(() => {
+        startButtonRef.current?.focus();
+    }, []);
 
     useEffect(() => {
         if (isRunning) {
@@ -95,10 +101,17 @@ function Stopwatch() {
 
     function startTimer() {
         setIsRunning(true);
+        startTimeRef.current = Date.now() - time;
+
+        if (splits.length === 0) {
+            setLastLapTime(0);
+        }
     }
     function resetTimer() {
         setIsRunning(false);
         setTime(0);
+        setSplits([]);
+        setLastLapTime(0);
         startTimeRef.current = 0;
     }
     function stopTimer() {
@@ -106,7 +119,13 @@ function Stopwatch() {
     }
 
     function lapTimer() {
-
+        const lapTime = time - lastLapTime;
+        const newLap = {
+            lap: splits.length + 1,
+            time: lapTime,
+        };
+        setSplits(prev => [newLap, ...prev]);
+        setLastLapTime(time);
     }
 
     function formatTime(time) {
@@ -122,7 +141,16 @@ function Stopwatch() {
         <>
             <div className='stopwatch-page'>
                 <div className="card">
-                    <div className='splits'></div>
+                    <div className="splits">
+                        {splits.map(({ lap, time }, index) => (
+                            <div key={index} className="split-item">
+                                {`Lap ${lap}: ${formatTime(time)}`}
+                            </div>
+                        ))}
+                    </div>
+
+
+
                     <div className="stopwatch-display">{formatTime(time)}</div>
                     <div className="controls">
                         <button
