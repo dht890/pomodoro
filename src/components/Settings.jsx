@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import '../css/card.css';
+import styles from '../css/settings.module.css';
 
 function formatTimeInput(raw) {
     let digits = raw.padStart(6, '0');
@@ -82,11 +82,11 @@ function Settings({ setDuration }) {
     return (
         <div className="card">
             <h2>Type to set duration</h2>
-            <div className="settings-display">
+            <div className={styles.settings_display}>
                 <input
                     ref={inputRef}
                     type="text"
-                    className="time-input"
+                    className={styles.time_input}
                     value={raw === '' ? '' : formatTimeInput(raw)}
                     onKeyDown={handleKeyDown}
                     readOnly
@@ -94,7 +94,7 @@ function Settings({ setDuration }) {
                     placeholder="00:00:00"
                 />
             </div>
-            <div className="error-message">
+            <div className={styles.error_message}>
                 {error ? error : " "}
             </div>
             <div className="controls">
