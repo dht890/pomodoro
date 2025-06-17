@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import styles from '../css/stopwatch.module.css';
+import { useTheme } from '../contexts/ThemeContext';
 
 function Stopwatch() {
     const [time, setTime] = useState(0);
@@ -7,6 +8,7 @@ function Stopwatch() {
     const [splits, setSplits] = useState([]);
     const [lastLapTime, setLastLapTime] = useState(0);
     const [pressedButton, setPressedButton] = useState(null);
+    const { themeColor, setThemeColor } = useTheme();
 
     const startButtonRef = useRef(null);
     const resetButtonRef = useRef(null);
@@ -184,7 +186,7 @@ function Stopwatch() {
 
     return (
         <div className='stopwatch-page'>
-            <div className="card">
+            <div className={`card ${themeColor}`}>
                 <div className={styles.splits}>
                     {splits.map(({ lap, time, isLongerThanPrev }, index) => (
                         <div

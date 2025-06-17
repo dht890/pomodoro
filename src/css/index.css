@@ -5,16 +5,16 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #1a3b1d;
+  /* background-color: rgb(26, 59, 29); */
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-body{
+body {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #1a3b1d;
+  background-color: rgb(26, 59, 29);
 }

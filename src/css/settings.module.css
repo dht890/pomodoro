@@ -2,8 +2,10 @@
     font-size: 6rem;
     font-weight: bold;
     color: #fff;
-    margin-top: 60px;
-    margin-bottom: 25px;
+    margin-top: 0px;
+    margin-bottom: 20px;
+    display: flex-start;
+    gap: 20px;
 }
 
 .time_input {
@@ -19,6 +21,7 @@
 
 .time_input::placeholder {
     color: #fff;
+    opacity: 0.8;
     font-size: 6rem;
     font-weight: bold;
     text-align: center;
@@ -31,4 +34,41 @@
     margin-bottom: 1rem;
     text-align: center;
     min-height: 1.5em;
+}
+
+.pomodoro {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.pomodoro_button {
+    margin: 5px;
+    font-size: 1.5rem;
+    font-family: monospace, Comic Sans MS;
+    background-color: #fff;
+    color: black;
+    font-weight: bold;
+    border: none;
+    border-radius: 50px;
+    width: 200px;
+    height: 50px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.pomodoro_button.active {
+    background-color: #676767;
+    color: white;
+    transform: scale(1.02);
+}
+
+.pomodoro_button:hover {
+    transform: scale(1.05);
+}
+
+.pomodoro_button:active {
+    transform: scale(0.95);
 }

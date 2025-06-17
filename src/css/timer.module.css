@@ -26,7 +26,14 @@
     gap: 0.25em;    
 }
 
-.pomodoro button {
+.pomodoro {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.pomodoro_button {
     margin: 5px;
     font-size: 1.5rem;
     font-family: monospace, Comic Sans MS;
@@ -35,9 +42,23 @@
     font-weight: bold;
     border: none;
     border-radius: 50px;
-    width: 150px;
+    width: 200px;
     height: 50px;
     cursor: pointer;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s ease;
+    transition: all 0.3s ease;
+}
+
+.pomodoro_button.active {
+    background-color: #676767;
+    color: white;
+    transform: scale(1.02);
+}
+
+.pomodoro_button:hover {
+    transform: scale(1.05);
+}
+
+.pomodoro_button:active {
+    transform: scale(0.95);
 }
