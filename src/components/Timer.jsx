@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import bellIcon from '../assets/bell.svg';
 import alarmSound from '../assets/reels.mp3';
-import '../css/card.css'
+import styles from '../css/timer.module.css'
 
 function CountdownTimer({ duration }) {
     const [time, setTime] = useState(duration);
@@ -67,7 +67,7 @@ function CountdownTimer({ duration }) {
                 case 'ArrowLeft':
                     event.preventDefault();
                     if (document.activeElement === resetButtonRef.current) {
-                        if (startButtonRef.current.disabled){
+                        if (startButtonRef.current.disabled) {
                             settingsButtonRef.current.focus()
                         }
                         startButtonRef.current.focus();
@@ -82,7 +82,7 @@ function CountdownTimer({ duration }) {
                     if (document.activeElement === resetButtonRef.current) {
                         settingsButtonRef.current.focus();
                     } else if (document.activeElement === settingsButtonRef.current) {
-                        if (startButtonRef.current.disabled){
+                        if (startButtonRef.current.disabled) {
                             resetButtonRef.current.focus();
                         }
                         startButtonRef.current.focus();
@@ -190,38 +190,42 @@ function CountdownTimer({ duration }) {
     }, []);
 
     return (
-        <div className="card">
-            <div className="end-time">
-                <img src={bellIcon} alt="Timer" className="bell-icon" />
-                {formatEndTime(time)}
-            </div>
-            <div className='timer-display'>{formatTime(time)}</div>
-            <div className='controls'>
-                <button
-                    ref={settingsButtonRef}
-                    onClick={() => navigate('/settings')}
-                    className={`settings_button ${pressedButton === 'settings' ? 'space-pressed' : ''}`}
-                >
-                    Set
-                </button>
-                <button
-                    ref={startButtonRef}
-                    onClick={isRunning ? stopTimer : startTimer}
-                    className={pressedButton === 'start' ? 'space-pressed' : ''}
-                    disabled={time <= 0}
-                >
-                    {(isRunning ? "Stop" : "Start")}
+            <div className='card'>
+                <div className={styles.pomodoro}>
+                    <button>Work</button>
+                    <button>Break</button>
+                </div>
+                <div className={styles.end_time}>
+                    <img src={bellIcon} alt="Timer" className={styles.bell_icon}/>
+                    {formatEndTime(time)}
+                </div>
+                <div className={styles.timer_display}>{formatTime(time)}</div>
+                <div className='controls'>
+                    <button
+                        ref={settingsButtonRef}
+                        onClick={() => navigate('/settings')}
+                        className={`small_button ${pressedButton === 'settings' ? 'space-pressed' : ''}`}
+                    >
+                        Set
+                    </button>
+                    <button
+                        ref={startButtonRef}
+                        onClick={isRunning ? stopTimer : startTimer}
+                        className={pressedButton === 'start' ? 'space-pressed' : ''}
+                        disabled={time <= 0}
+                    >
+                        {(isRunning ? "Stop" : "Start")}
 
-                </button>
-                <button
-                    ref={resetButtonRef}
-                    onClick={resetTimer}
-                    className={`small_button ${pressedButton === 'reset' ? 'space-pressed' : ''}`}
-                >
-                    Reset
-                </button>
+                    </button>
+                    <button
+                        ref={resetButtonRef}
+                        onClick={resetTimer}
+                        className={`small_button ${pressedButton === 'reset' ? 'space-pressed' : ''}`}
+                    >
+                        Reset
+                    </button>
+                </div>
             </div>
-        </div>
     );
 }
 

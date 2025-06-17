@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import '../css/card.css';
+import styles from '../css/stopwatch.module.css';
 
 function Stopwatch() {
     const [time, setTime] = useState(0);
@@ -185,11 +185,11 @@ function Stopwatch() {
     return (
         <div className='stopwatch-page'>
             <div className="card">
-                <div className="splits">
+                <div className={styles.splits}>
                     {splits.map(({ lap, time, isLongerThanPrev }, index) => (
                         <div
                             key={index}
-                            className="split-item"
+                            className={styles.split_item}
                             style={{
                                 color: lap === 1
                                     ? 'white'
@@ -203,7 +203,7 @@ function Stopwatch() {
                     ))}
                 </div>
 
-                <div className="stopwatch-display">{formatTime(time)}</div>
+                <div className={styles.stopwatch_display}>{formatTime(time)}</div>
 
                 <div className="controls">
                     <button

@@ -7,14 +7,14 @@ import { Routes, Route } from 'react-router-dom'
 import './css/App.css'
 
 function App() {
-  const [duration, setDuration] = useState(10 * 60 * 1000); // Default 10 minutes
+  const [duration, setDuration] = useState(25 * 60 * 1000); // Default 10 minutes
 
   return (
     <>
       <Navbar />
       <main>
         <Routes>
-          <Route path="/" element={<Timer duration={duration} />} />
+          <Route path="/" element={<Timer duration={duration}/>} />
           <Route path="/stopwatch" element={<Stopwatch />} />
           <Route path="/timer" element={<Timer duration={duration} />} />
           <Route path="/settings" element={<Settings setDuration={setDuration} />} />
