@@ -216,7 +216,7 @@ function CountdownTimer({ duration }) {
                 <button
                     ref={resetButtonRef}
                     onClick={resetTimer}
-                    className={`reset_button ${pressedButton === 'reset' ? 'space-pressed' : ''}`}
+                    className={`small_button ${pressedButton === 'reset' ? 'space-pressed' : ''}`}
                 >
                     Reset
                 </button>
