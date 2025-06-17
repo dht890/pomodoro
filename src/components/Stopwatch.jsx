@@ -146,28 +146,30 @@ function Stopwatch() {
         const currentTime = timeRef.current;
         const lapTime = currentTime - lastLapTimeRef.current;
 
-        lapCountRef.current += 1;
-
-        // When newest lap is at index 0, previous lap is at index 1
-        const prevLap = splitsRef.current[1]; // second newest lap
-        const isLongerThanPrev = prevLap ? lapTime > prevLap.time : false;
-
-
-        const newLap = {
-            lap: lapCountRef.current,
-            time: lapTime,
-            isLongerThanPrev,
-        };
-
         setSplits(prev => {
-            const newSplits = [newLap, ...prev]; // add newest at front
-            splitsRef.current = newSplits;
-            return newSplits;
-        });
+            const prevLap = prev[0]; // previous is at index 0 (most recent)
+            const isLongerThanPrev = prevLap ? lapTime > prevLap.time : false;
 
-        console.log(`Lap ${lapCountRef.current}: ${lapTime}ms, Previous: ${prevLap?.time}ms, isLongerThanPrev: ${isLongerThanPrev}`);
-        lastLapTimeRef.current = currentTime;
+            lapCountRef.current += 1;
+            
+            console.log(`Lap ${lapCountRef.current}: ${lapTime}ms, Previous: ${prevLap?.time}ms, isLongerThanPrev: ${isLongerThanPrev}`);
+
+            const newLap = {
+                lap: lapCountRef.current,
+                time: lapTime,
+                isLongerThanPrev,
+            };
+
+            const newSplits = [newLap, ...prev];
+
+            splitsRef.current = newSplits;
+            lastLapTimeRef.current = currentTime;
+
+            return newSplits;
+            
+        });
     }
+
 
 
 
