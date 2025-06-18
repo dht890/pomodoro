@@ -22,7 +22,7 @@ function App() {
               <Route path="/timer" element={<Timer />} />
               <Route path="/settings" element={<Settings />} />
             </Routes>
-            <Analytics />
+            <Analytics/>
           </main>
         </TimerProvider>
       </ModeProvider>

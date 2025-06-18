@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback, useReducer } from 'react';
 import { useNavigate } from 'react-router-dom';
 import bellIcon from '../assets/bell.svg';
 import alarmSound from '../assets/reels.mp3';
@@ -7,16 +7,73 @@ import { useTheme } from '../contexts/ThemeContext';
 import { useMode } from '../contexts/ModeContext';
 import { useTimer } from '../contexts/TimerContext';
 
+/**
+ * CountdownTimer Component
+ * A Pomodoro timer that alternates between work and break modes.
+ * Features:
+ * - Work mode (25 minutes) and Break mode (5 minutes)
+ * - Start, stop, and reset functionality
+ * - Audio notification when timer completes
+ * - Keyboard navigation support
+ * - Automatic mode switching when timer completes
+ */
+
+// Timer state reducer
+function timerReducer(state, action) {
+    switch (action.type) {
+        case 'START_TIMER':
+            return {
+                ...state,
+                // If resuming from pause, keep current time. If starting fresh, use full duration
+                time: action.fromPause ? state.time : action.duration,
+                baseTime: action.fromPause ? state.time : action.duration,
+                isRunning: true
+            };
+        case 'STOP_TIMER':
+            return {
+                ...state,
+                isRunning: false
+            };
+        case 'SET_TIME':
+            return {
+                ...state,
+                time: action.time
+            };
+        case 'RESET_TIMER':
+            return {
+                ...state,
+                time: action.duration,
+                baseTime: action.duration,
+                isRunning: false
+            };
+        case 'MODE_CHANGE':
+            return {
+                ...state,
+                time: action.duration,
+                baseTime: action.duration,
+                isRunning: false
+            };
+        default:
+            return state;
+    }
+}
+
 function CountdownTimer() {
+    // Context hooks for mode, theme, and timer settings
     const { mode, toggleMode } = useMode();
     const { themeColor } = useTheme();
     const { getCurrentDuration } = useTimer();
-    
-    const currentDuration = getCurrentDuration(mode);
-    const [time, setTime] = useState(currentDuration);
-    const [isRunning, setIsRunning] = useState(false);
+
+    // Replace multiple useState with useReducer
+    const [timerState, dispatch] = useReducer(timerReducer, {
+        time: getCurrentDuration(mode),
+        baseTime: getCurrentDuration(mode),
+        isRunning: false
+    });
+
     const [pressedButton, setPressedButton] = useState(null);
-    const [baseTime, setBaseTime] = useState(currentDuration);
+
+    // Refs for DOM elements and timer management
     const startButtonRef = useRef(null);
     const resetButtonRef = useRef(null);
     const settingsButtonRef = useRef(null);
@@ -26,39 +83,60 @@ function CountdownTimer() {
     const audioRef = useRef(null);
     const navigate = useNavigate();
 
-    // Update timer when mode changes
+    // Handlers for mode switching
+    const handleWorkMode = useCallback(() => {
+        toggleMode('work');
+    }, [toggleMode]);
+
+    const handleBreakMode = useCallback(() => {
+        toggleMode('break');
+    }, [toggleMode]);
+
+    // Effect to handle mode changes
     useEffect(() => {
+        if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+            intervalRef.current = null;
+        }
+        
         const newDuration = getCurrentDuration(mode);
-        setTime(newDuration);
-        setBaseTime(newDuration);
-        setIsRunning(false);
+        console.log('Mode changed to:', mode, 'New duration:', newDuration);
+        dispatch({ type: 'MODE_CHANGE', duration: newDuration });
     }, [mode, getCurrentDuration]);
 
+    // Main timer effect - handles countdown logic
     useEffect(() => {
-        if (isRunning && time > 0) {
+        if (timerState.isRunning && timerState.time > 0) {
             const startTimestamp = Date.now();
             intervalRef.current = setInterval(() => {
                 const elapsed = Date.now() - startTimestamp;
-                setTime(prevTime => {
-                    const newTime = baseTime - elapsed;
-                    if (newTime <= 0) {
-                        clearInterval(intervalRef.current);
-                        setIsRunning(false);
-                        playSound();
-                        // Switch modes
-                        const nextMode = mode === 'work' ? 'break' : 'work';
-                        toggleMode(nextMode);
-                        return 0;
-                    }
-                    return newTime;
-                });
+                const newTime = timerState.baseTime - elapsed;
+                if (newTime <= 0) {
+                    clearInterval(intervalRef.current);
+                    dispatch({ type: 'STOP_TIMER' });
+                    playSound();
+                    // Switch modes and reset timer state
+                    const nextMode = mode === 'work' ? 'break' : 'work';
+                    toggleMode(nextMode);
+                    const nextDuration = getCurrentDuration(nextMode);
+                    dispatch({ type: 'MODE_CHANGE', duration: nextDuration });
+                } else {
+                    dispatch({ type: 'SET_TIME', time: newTime });
+                }
             }, 10);
         } else if (intervalRef.current) {
             clearInterval(intervalRef.current);
             intervalRef.current = null;
         }
-    }, [isRunning, baseTime, mode, toggleMode]);
 
+        return () => {
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+            }
+        };
+    }, [timerState.isRunning, timerState.baseTime, mode, toggleMode, getCurrentDuration]);
+
+    // Keyboard navigation and control effect
     useEffect(() => {
         const handleKeyDown = (event) => {
             switch (event.code) {
@@ -72,20 +150,25 @@ function CountdownTimer() {
                         navigate('/settings');
                     } else if (document.activeElement === startButtonRef.current) {
                         setPressedButton('start');
-                        if (isRunning) {
+                        if (timerState.isRunning) {
+                            console.log('Stopping timer with spacebar. Time:', timerState.time);
                             stopTimer();
                         } else {
+                            console.log('Starting timer with spacebar. Time:', timerState.time);
                             startTimer();
                         }
                     } else if (document.activeElement === workButtonRef.current) {
+                        console.log('Switching to work mode with spacebar. Time:', timerState.time);
                         setPressedButton('work');
-                        toggleMode('work');
+                        handleWorkMode();
                     } else if (document.activeElement === breakButtonRef.current) {
+                        console.log('Switching to break mode with spacebar. Time:', timerState.time);
                         setPressedButton('break');
-                        toggleMode('break');
+                        handleBreakMode();
                     }
                     break;
                 case 'ArrowLeft':
+                    // Handle left arrow navigation between buttons
                     event.preventDefault();
                     if (document.activeElement === resetButtonRef.current) {
                         startButtonRef.current.focus();
@@ -100,6 +183,7 @@ function CountdownTimer() {
                     }
                     break;
                 case 'ArrowRight':
+                    // Handle right arrow navigation between buttons
                     event.preventDefault();
                     if (document.activeElement === resetButtonRef.current) {
                         settingsButtonRef.current.focus();
@@ -123,43 +207,57 @@ function CountdownTimer() {
                     break;
             }
         };
+
         const handleKeyUp = (event) => {
             if (event.code === 'Space') {
                 setPressedButton(null);
             }
         };
+
         window.addEventListener('keydown', handleKeyDown);
         window.addEventListener('keyup', handleKeyUp);
         return () => {
             window.removeEventListener('keydown', handleKeyDown);
             window.removeEventListener('keyup', handleKeyUp);
         };
-    }, [isRunning]);
+    }, [timerState.isRunning, timerState.time, navigate, handleWorkMode, handleBreakMode]);
 
+    // Focus start button on component mount
     useEffect(() => {
         startButtonRef.current?.focus();
     }, []);
 
-
+    /**
+     * Starts or resumes the timer
+     * If timer is at 0, resets to full duration
+     * If timer was paused, resumes from current time
+     */
     function startTimer() {
-        if (time <= 0) {
-            const newDuration = getCurrentDuration(mode);
-            setTime(newDuration);
-            setBaseTime(newDuration);
-            setIsRunning(true);
-            cleanupAudio();
+        if (timerState.time <= 0) {
+            // If timer is expired, start fresh with full duration
+            const currentDuration = getCurrentDuration(mode);
+            console.log('Starting fresh timer for mode:', mode, 'with duration:', currentDuration);
+            dispatch({ type: 'START_TIMER', duration: currentDuration, fromPause: false });
         } else {
-            setBaseTime(time);
-            setIsRunning(true);
-            cleanupAudio();
+            // If timer was paused, resume from current time
+            console.log('Resuming timer from:', timerState.time);
+            dispatch({ type: 'START_TIMER', duration: timerState.time, fromPause: true });
         }
-    }
-
-    function stopTimer() {
-        setIsRunning(false);
         cleanupAudio();
     }
 
+    /**
+     * Pauses the timer
+     */
+    function stopTimer() {
+        dispatch({ type: 'STOP_TIMER' });
+        cleanupAudio();
+    }
+
+    /**
+     * Cleans up any playing audio
+     * Called when stopping timer or switching modes
+     */
     const cleanupAudio = () => {
         if (audioRef.current) {
             audioRef.current.pause();
@@ -168,14 +266,18 @@ function CountdownTimer() {
         }
     };
 
+    /**
+     * Resets the timer to the full duration of current mode
+     */
     function resetTimer() {
-        setIsRunning(false);
-        const newDuration = getCurrentDuration(mode);
-        setTime(newDuration);
-        setBaseTime(newDuration);
+        const currentDuration = getCurrentDuration(mode);
+        dispatch({ type: 'RESET_TIMER', duration: currentDuration });
         cleanupAudio();
     }
 
+    /**
+     * Formats milliseconds into HH:MM:SS:MS display format
+     */
     function formatTime(time) {
         const totalSeconds = Math.floor(time / 1000);
         const hours = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
@@ -185,6 +287,9 @@ function CountdownTimer() {
         return `${hours}:${minutes}:${seconds}:${milliseconds}`;
     }
 
+    /**
+     * Calculates and formats the end time display (when timer will complete)
+     */
     function formatEndTime(time) {
         const end = new Date(Date.now() + time);
         let hours = end.getHours();
@@ -195,6 +300,10 @@ function CountdownTimer() {
         return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')} ${ampm}`;
     }
 
+    /**
+     * Plays the completion sound
+     * Creates a new audio instance and loops it until stopped
+     */
     function playSound() {
         if (audioRef.current) {
             audioRef.current.pause();
@@ -206,7 +315,7 @@ function CountdownTimer() {
         audioRef.current = audio;
     }
 
-    // Add cleanup effect that runs before navigation
+    // Cleanup effect for audio when navigating away
     useEffect(() => {
         const cleanupAudio = () => {
             if (audioRef.current) {
@@ -216,7 +325,6 @@ function CountdownTimer() {
             }
         };
 
-        // Clean up audio before navigation
         window.addEventListener('popstate', cleanupAudio);
 
         return () => {
@@ -225,35 +333,36 @@ function CountdownTimer() {
         };
     }, []);
 
+    // Update background color based on theme
     useEffect(() => {
         if (themeColor === 'teal') {
             document.body.style.backgroundColor = 'rgb(32, 100, 105)'; //darker teal
         } else if (themeColor === 'green') {
             document.body.style.backgroundColor = 'rgb(26, 59, 29)'; //darker green
-        } 
+        }
     }, [themeColor]);
 
     return (
         <div className={`card ${themeColor}`}>
             <div className={styles.pomodoro}>
-                <button 
+                <button
                     ref={workButtonRef}
-                    onClick={() => toggleMode('work')}
+                    onClick={handleWorkMode}
                     className={`${styles.pomodoro_button} ${mode === 'work' ? styles.active : ''} ${pressedButton === 'work' ? 'space-pressed' : ''}`}>
                     Work
                 </button>
-                <button 
+                <button
                     ref={breakButtonRef}
-                    onClick={() => toggleMode('break')}
+                    onClick={handleBreakMode}
                     className={`${styles.pomodoro_button} ${mode === 'break' ? styles.active : ''} ${pressedButton === 'break' ? 'space-pressed' : ''}`}>
                     Break
                 </button>
             </div>
             <div className={styles.end_time}>
                 <img src={bellIcon} alt="Timer" className={styles.bell_icon} />
-                {formatEndTime(time)}
+                {formatEndTime(timerState.time)}
             </div>
-            <div className={styles.timer_display}>{formatTime(time)}</div>
+            <div className={styles.timer_display}>{formatTime(timerState.time)}</div>
             <div className='controls'>
                 <button
                     ref={settingsButtonRef}
@@ -263,10 +372,10 @@ function CountdownTimer() {
                 </button>
                 <button
                     ref={startButtonRef}
-                    onClick={isRunning ? stopTimer : startTimer}
+                    onClick={timerState.isRunning ? stopTimer : startTimer}
                     className={pressedButton === 'start' ? 'space-pressed' : ''}
-                    disabled={time <= 0}>
-                    {(isRunning ? "Stop" : "Start")}
+                    disabled={timerState.time <= 0}>
+                    {(timerState.isRunning ? "Stop" : "Start")}
                 </button>
                 <button
                     ref={resetButtonRef}
