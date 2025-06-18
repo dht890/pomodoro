@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import bellIcon from '../assets/bell.svg';
 import alarmSound from '../assets/reels.mp3';
@@ -23,6 +23,14 @@ function CountdownTimer() {
     const intervalRef = useRef(null);
     const audioRef = useRef(null);
     const navigate = useNavigate();
+
+    const handleWorkMode = useCallback(() => {
+        toggleMode('work');
+    }, [toggleMode]);
+
+    const handleBreakMode = useCallback(() => {
+        toggleMode('break');
+    }, [toggleMode]);
 
     // Update timer when mode changes
     useEffect(() => {
@@ -219,12 +227,12 @@ function CountdownTimer() {
         <div className={`card ${themeColor}`}>
             <div className={styles.pomodoro}>
                 <button 
-                    onClick={() => toggleMode('work')}
+                    onClick={handleWorkMode}
                     className={`${styles.pomodoro_button} ${mode === 'work' ? styles.active : ''}`}>
                     Work
                 </button>
                 <button 
-                    onClick={() => toggleMode('break')}
+                    onClick={handleBreakMode}
                     className={`${styles.pomodoro_button} ${mode === 'break' ? styles.active : ''}`}>
                     Break
                 </button>

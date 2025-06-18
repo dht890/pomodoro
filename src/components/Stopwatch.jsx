@@ -196,8 +196,8 @@ function Stopwatch() {
                                 color: lap === 1
                                     ? 'white'
                                     : isLongerThanPrev
-                                        ? 'red'
-                                        : 'green',
+                                        ? '#ff6464'
+                                        : '#5fa854',
                             }}
                         >
                             {`Lap ${lap}: ${formatTime(time)}`}
