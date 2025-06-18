@@ -33,7 +33,7 @@ function Navbar() {
                     <p>space/enter - confirm</p>
                 </div>
                 <div className='version'>
-                    v5.2.1
+                    v6.0.2
                 </div>
                 Created with React
                 <img src={reactIcon} />
