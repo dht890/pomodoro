@@ -51,24 +51,9 @@ function Settings() {
             return () => clearTimeout(timer);
         }
     }, [confirmation]);
-
-    // Global ArrowUp handler to always focus input
-    useEffect(() => {
-        const handleArrowUp = (e) => {
-            if (e.key === 'ArrowUp') {
-                e.preventDefault();
-                inputRef.current?.focus();
-            } else if (document.activeElement.current === inputRef.current && e.key === "ArrowUp") {
-                e.preventDefault();
-                workButtonRef.current.focus();
-            }
-        };
-        window.addEventListener('keydown', handleArrowUp);
-        return () => window.removeEventListener('keydown', handleArrowUp);
-    }, []);
-
-    // Keyboard support for time input (numbers, backspace, tab, enter)
-    const handleKeyDown = (e) => {
+   
+    // Handle numeric input and basic input controls
+    const handleInputKeyDown = (e) => {
         if (e.key >= '0' && e.key <= '9') {
             if (raw.length < 6) setRaw(raw + e.key);
             setError('');
@@ -80,16 +65,83 @@ function Settings() {
         } else if (e.key === 'Enter') {
             handleSave();
             e.preventDefault();
-        } else if (e.key === 'Tab') {
-            // Allow tab
-        } else if (e.key === 'ArrowDown') {
-            // Move focus to Save button
-            saveButtonRef.current?.focus();
-            e.preventDefault();
         } else {
             e.preventDefault();
         }
     };
+
+    // Handle navigation between elements
+    const handleNavigation = (e) => {
+        switch (e.key) {
+            case 'ArrowUp':
+                if (document.activeElement === inputRef.current) {
+                    workButtonRef.current.focus();
+                    e.preventDefault();
+                } else if (document.activeElement === saveButtonRef.current ||
+                           document.activeElement === clearButtonRef.current ||
+                           document.activeElement === backButtonRef.current
+                ) {
+                    inputRef.current.focus();
+                    e.preventDefault();
+                } 
+                break;
+            case 'ArrowDown':
+                if (document.activeElement === inputRef.current) {
+                    saveButtonRef.current.focus();
+                    e.preventDefault();
+                } else if (document.activeElement === workButtonRef.current ||
+                           document.activeElement === breakButtonRef.current
+                ) {
+                    inputRef.current.focus();
+                    e.preventDefault();
+                }
+                break;
+            case 'ArrowRight':
+                if (document.activeElement === saveButtonRef.current) {
+                    clearButtonRef.current.focus();
+                    e.preventDefault();
+                } else if (document.activeElement === clearButtonRef.current) {
+                    backButtonRef.current.focus();
+                    e.preventDefault();
+                } else if (document.activeElement === backButtonRef.current) {
+                    saveButtonRef.current.focus();
+                    e.preventDefault();
+                } else if (document.activeElement === workButtonRef.current) {
+                    breakButtonRef.current.focus();
+                    e.preventDefault();
+                } else if (document.activeElement === breakButtonRef.current) {
+                    workButtonRef.current.focus();
+                    e.preventDefault();
+                }
+                break;
+            case 'ArrowLeft':
+                if (document.activeElement === saveButtonRef.current) {
+                    backButtonRef.current.focus();
+                    e.preventDefault();
+                } else if (document.activeElement === backButtonRef.current) {
+                    clearButtonRef.current.focus();
+                    e.preventDefault();
+                } else if (document.activeElement === clearButtonRef.current) {
+                    saveButtonRef.current.focus();
+                    e.preventDefault();
+                } else if (document.activeElement === workButtonRef.current){
+                    breakButtonRef.current.focus();
+                    e.preventDefault();
+                } else if (document.activeElement === breakButtonRef.current) {
+                    workButtonRef.current.focus();
+                    e.preventDefault();
+                }
+                break;
+        }   
+    };
+
+    // Add global event listener for navigation
+    useEffect(() => {
+        window.addEventListener('keydown', handleNavigation);
+        return () => {
+            window.removeEventListener('keydown', handleNavigation);
+        };
+    }, []); // No dependencies needed since we're not using any state in navigation
 
     const handleSave = () => {
         let digits = raw.padStart(6, '0');
@@ -117,6 +169,7 @@ function Settings() {
         setConfirmation('');
     };
 
+    // Theme color background
     useEffect(() => {
         if (themeColor === 'teal') {
             document.body.style.backgroundColor = 'rgb(32, 100, 105)'; //darker teal
@@ -148,7 +201,7 @@ function Settings() {
                     type="text"
                     className={styles.time_input}
                     value={raw === '' ? '' : formatTimeInput(raw)}
-                    onKeyDown={handleKeyDown}
+                    onKeyDown={handleInputKeyDown}
                     readOnly
                     maxLength={8}
                     placeholder="00:00:00"
@@ -169,19 +222,6 @@ function Settings() {
                 <button
                     ref={saveButtonRef}
                     onClick={handleSave}
-                    onKeyDown={e => {
-                        if (e.code === 'ArrowRight') {
-                            clearButtonRef.current.focus();
-                            e.preventDefault();
-                        } else if (e.code === 'Space' || e.code === 'Enter') {
-                            setPressedButton('save');
-                            handleSave();
-                            e.preventDefault();
-                        }
-                    }}
-                    onKeyUp={e => {
-                        if (e.code === 'Space' || e.code === 'Enter') setPressedButton(null);
-                    }}
                     className={pressedButton === 'save' ? 'space-pressed' : ''}
                 >
                     Save
@@ -189,19 +229,6 @@ function Settings() {
                 <button
                     ref={clearButtonRef}
                     onClick={handleClear}
-                    onKeyDown={e => {
-                        if (e.code === 'ArrowLeft') {
-                            saveButtonRef.current.focus();
-                            e.preventDefault();
-                        } else if (e.code === 'Space' || e.code === 'Enter') {
-                            setPressedButton('clear');
-                            handleClear();
-                            e.preventDefault();
-                        }
-                    }}
-                    onKeyUp={e => {
-                        if (e.code === 'Space' || e.code === 'Enter') setPressedButton(null);
-                    }}
                     className={`small_button ${pressedButton === 'clear' ? 'space-pressed' : ''}`}
                 >
                     Clear

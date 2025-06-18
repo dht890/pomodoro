@@ -20,6 +20,8 @@ function CountdownTimer() {
     const startButtonRef = useRef(null);
     const resetButtonRef = useRef(null);
     const settingsButtonRef = useRef(null);
+    const workButtonRef = useRef(null);
+    const breakButtonRef = useRef(null);
     const intervalRef = useRef(null);
     const audioRef = useRef(null);
     const navigate = useNavigate();
@@ -88,14 +90,15 @@ function CountdownTimer() {
                 case 'ArrowLeft':
                     event.preventDefault();
                     if (document.activeElement === resetButtonRef.current) {
-                        if (startButtonRef.current.disabled) {
-                            settingsButtonRef.current.focus()
-                        }
                         startButtonRef.current.focus();
                     } else if (document.activeElement === settingsButtonRef.current) {
                         resetButtonRef.current.focus();
-                    } else {
+                    } else if (document.activeElement === startButtonRef.current) {
                         settingsButtonRef.current.focus();
+                    } else if (document.activeElement === workButtonRef.current) {
+                        breakButtonRef.current.focus();
+                    } else if (document.activeElement === breakButtonRef.current) {
+                        workButtonRef.current.focus();
                     }
                     break;
                 case 'ArrowRight':
@@ -103,13 +106,22 @@ function CountdownTimer() {
                     if (document.activeElement === resetButtonRef.current) {
                         settingsButtonRef.current.focus();
                     } else if (document.activeElement === settingsButtonRef.current) {
-                        if (startButtonRef.current.disabled) {
-                            resetButtonRef.current.focus();
-                        }
                         startButtonRef.current.focus();
-                    } else {
+                    } else if (document.activeElement === startButtonRef.current) {
                         resetButtonRef.current.focus();
+                    } else if (document.activeElement === workButtonRef.current) {
+                        breakButtonRef.current.focus();
+                    } else if (document.activeElement === breakButtonRef.current) {
+                        workButtonRef.current.focus();
                     }
+                    break;
+                case 'ArrowUp':
+                    event.preventDefault();
+                    workButtonRef.current.focus();
+                    break;
+                case 'ArrowDown':
+                    event.preventDefault();
+                    startButtonRef.current.focus();
                     break;
             }
         };
@@ -227,11 +239,13 @@ function CountdownTimer() {
         <div className={`card ${themeColor}`}>
             <div className={styles.pomodoro}>
                 <button 
+                    ref={workButtonRef}
                     onClick={handleWorkMode}
                     className={`${styles.pomodoro_button} ${mode === 'work' ? styles.active : ''}`}>
                     Work
                 </button>
                 <button 
+                    ref={breakButtonRef}
                     onClick={handleBreakMode}
                     className={`${styles.pomodoro_button} ${mode === 'break' ? styles.active : ''}`}>
                     Break
