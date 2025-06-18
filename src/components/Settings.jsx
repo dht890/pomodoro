@@ -21,6 +21,11 @@ function Settings() {
     const inputRef = useRef(null);
     const saveButtonRef = useRef(null);
     const clearButtonRef = useRef(null);
+
+    const backButtonRef = useRef(null);
+    const workButtonRef = useRef(null);
+    const breakButtonRef = useRef(null);
+
     const [pressedButton, setPressedButton] = useState(null);
     const { themeColor, setThemeColor } = useTheme();
     const { mode, toggleMode } = useMode();
@@ -51,8 +56,11 @@ function Settings() {
     useEffect(() => {
         const handleArrowUp = (e) => {
             if (e.key === 'ArrowUp') {
-                inputRef.current?.focus();
                 e.preventDefault();
+                inputRef.current?.focus();
+            } else if (document.activeElement.current === inputRef.current && e.key === "ArrowUp") {
+                e.preventDefault();
+                workButtonRef.current.focus();
             }
         };
         window.addEventListener('keydown', handleArrowUp);
@@ -121,11 +129,13 @@ function Settings() {
         <div className={`card ${themeColor}`}>
             <div className={styles.pomodoro}>
                 <button 
+                    ref={workButtonRef}
                     onClick={() => toggleMode('work')}
                     className={`${styles.pomodoro_button} ${mode === 'work' ? styles.active : ''}`}>
                     Work
                 </button>
                 <button 
+                    ref={breakButtonRef}
                     onClick={() => toggleMode('break')}
                     className={`${styles.pomodoro_button} ${mode === 'break' ? styles.active : ''}`}>
                     Break
@@ -150,7 +160,8 @@ function Settings() {
             </div>
             <div className="controls">
                 <button 
-                        onClick={() => navigate('/timer')}
+                    ref={backButtonRef}
+                    onClick={() => navigate('/timer')}
                     className={`small_button ${pressedButton === 'back' ? 'space-pressed' : ''}`}
                 >
                     Back
