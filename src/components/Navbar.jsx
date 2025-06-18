@@ -32,6 +32,9 @@ function Navbar() {
                     <p>arrow keys - navigate</p>
                     <p>space/enter - confirm</p>
                 </div>
+                <div className='version'>
+                    v5.0.0
+                </div>
                 Created with React
                 <img src={reactIcon} />
             </div>

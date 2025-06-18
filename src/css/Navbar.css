@@ -124,3 +124,14 @@ main {
     vertical-align: middle;
     margin-left: 5px;
 }
+
+.credits .version {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin: 0;
+    color: #fff;
+    opacity: 0.6;
+}
