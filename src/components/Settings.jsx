@@ -17,6 +17,7 @@ function Settings() {
     const navigate = useNavigate();
     const [raw, setRaw] = useState('');
     const [error, setError] = useState('');
+    const [confirmation, setConfirmation] = useState('');
     const inputRef = useRef(null);
     const saveButtonRef = useRef(null);
     const clearButtonRef = useRef(null);
@@ -33,7 +34,18 @@ function Settings() {
     useEffect(() => {
         setRaw('');
         setError('');
+        setConfirmation('');
     }, [mode]);
+
+    // Clear confirmation message after 2 seconds
+    useEffect(() => {
+        if (confirmation) {
+            const timer = setTimeout(() => {
+                setConfirmation('');
+            }, 2000);
+            return () => clearTimeout(timer);
+        }
+    }, [confirmation]);
 
     // Global ArrowUp handler to always focus input
     useEffect(() => {
@@ -81,10 +93,10 @@ function Settings() {
             setError('');
             if (mode === 'work') {
                 setWorkDuration(duration);
-                console.log('work duration set to', duration);
+                setConfirmation(`Work duration set to ${formatTimeInput(raw)}`);
             } else {
                 setBreakDuration(duration);
-                console.log('break duration set to', duration);
+                setConfirmation(`Break duration set to ${formatTimeInput(raw)}`);
             }
         } else {
             setError('Time cannot be set to zero');
@@ -94,6 +106,7 @@ function Settings() {
     const handleClear = () => {
         setRaw('');
         setError('');
+        setConfirmation('');
     };
 
     useEffect(() => {
@@ -131,8 +144,9 @@ function Settings() {
                     placeholder="00:00:00"
                 />
             </div>
-            <div className={styles.error_message}>
-                {error ? error : " "}
+            <div className={styles.message}>
+                {error ? <span className={styles.error}>{error}</span> : 
+                 confirmation ? <span className={styles.confirmation}>{confirmation}</span> : " "}
             </div>
             <div className="controls">
                 <button 
