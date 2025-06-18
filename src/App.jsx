@@ -10,10 +10,6 @@ import { TimerProvider } from './contexts/TimerContext.jsx'
 import './css/App.css'
 
 function App() {
-  // const [workDuration, setWorkDuration] = useState(25 * 60 * 1000); // Default 25 minutes
-  // const [breakDuration, setBreakDuration] = useState(5 * 60 * 1000); // Default 5 minutes
-  const [duration, setDuration] = useState(25 * 60 * 1000); // Default 25 minutes
-
   return (
     <ThemeProvider>
       <ModeProvider>
@@ -24,7 +20,7 @@ function App() {
               <Route path="/" element={<Timer />} />
               <Route path="/stopwatch" element={<Stopwatch />} />
               <Route path="/timer" element={<Timer />} />
-              <Route path="/settings" element={<Settings setDuration={setDuration} />} />
+              <Route path="/settings" element={<Settings />} />
             </Routes>
           </main>
         </TimerProvider>

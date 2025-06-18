@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import styles from '../css/settings.module.css';
 import { useTheme } from '../contexts/ThemeContext';
 import { useMode } from '../contexts/ModeContext';
+import { useTimer } from '../contexts/TimerContext';
+import styles from '../css/settings.module.css';
 
 function formatTimeInput(raw) {
     let digits = raw.padStart(6, '0');
@@ -12,7 +13,7 @@ function formatTimeInput(raw) {
     return `${h}:${m}:${s}`;
 }
 
-function Settings({ setDuration }) {
+function Settings() {
     const navigate = useNavigate();
     const [raw, setRaw] = useState('');
     const [error, setError] = useState('');
@@ -22,10 +23,17 @@ function Settings({ setDuration }) {
     const [pressedButton, setPressedButton] = useState(null);
     const { themeColor, setThemeColor } = useTheme();
     const { mode, toggleMode } = useMode();
+    const { setWorkDuration, setBreakDuration } = useTimer();
 
     useEffect(() => {
         inputRef.current?.focus();
     }, []);
+
+    // Reset input when mode changes
+    useEffect(() => {
+        setRaw('');
+        setError('');
+    }, [mode]);
 
     // Global ArrowUp handler to always focus input
     useEffect(() => {
@@ -71,8 +79,13 @@ function Settings({ setDuration }) {
         const duration = (h * 3600 + m * 60 + s) * 1000;
         if (duration > 0) {
             setError('');
-            setDuration(duration);
-            navigate('/timer');
+            if (mode === 'work') {
+                setWorkDuration(duration);
+                console.log('work duration set to', duration);
+            } else {
+                setBreakDuration(duration);
+                console.log('break duration set to', duration);
+            }
         } else {
             setError('Time cannot be set to zero');
         }
@@ -122,6 +135,12 @@ function Settings({ setDuration }) {
                 {error ? error : " "}
             </div>
             <div className="controls">
+                <button 
+                        onClick={() => navigate('/timer')}
+                    className={`small_button ${pressedButton === 'back' ? 'space-pressed' : ''}`}
+                >
+                    Back
+                </button>
                 <button
                     ref={saveButtonRef}
                     onClick={handleSave}
@@ -158,7 +177,7 @@ function Settings({ setDuration }) {
                     onKeyUp={e => {
                         if (e.code === 'Space' || e.code === 'Enter') setPressedButton(null);
                     }}
-                    className={pressedButton === 'clear' ? 'space-pressed' : ''}
+                    className={`small_button ${pressedButton === 'clear' ? 'space-pressed' : ''}`}
                 >
                     Clear
                 </button>
