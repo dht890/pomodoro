@@ -71,3 +71,43 @@
 .pomodoro_button:active {
     transform: scale(0.95);
 }
+
+.message {
+    height: 1.5em;
+    margin-bottom: 20px;
+    text-align: center;
+    font-family: monospace;
+}
+
+.error {
+    color: #ff6b6b;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.confirmation {
+    color: #69db7c;
+    font-weight: bold;
+    font-size: 1.2rem;
+    animation: fadeInOut 2s ease-in-out;
+    animation-fill-mode: forwards;
+}
+
+@keyframes fadeInOut {
+    0% {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    15% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    85% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+}
