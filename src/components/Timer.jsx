@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import bellIcon from '../assets/bell.svg';
 import alarmSound from '../assets/reels.mp3';
@@ -25,14 +25,6 @@ function CountdownTimer() {
     const intervalRef = useRef(null);
     const audioRef = useRef(null);
     const navigate = useNavigate();
-
-    const handleWorkMode = useCallback(() => {
-        toggleMode('work');
-    }, [toggleMode]);
-
-    const handleBreakMode = useCallback(() => {
-        toggleMode('break');
-    }, [toggleMode]);
 
     // Update timer when mode changes
     useEffect(() => {
@@ -85,6 +77,12 @@ function CountdownTimer() {
                         } else {
                             startTimer();
                         }
+                    } else if (document.activeElement === workButtonRef.current) {
+                        setPressedButton('work');
+                        toggleMode('work');
+                    } else if (document.activeElement === breakButtonRef.current) {
+                        setPressedButton('break');
+                        toggleMode('break');
                     }
                     break;
                 case 'ArrowLeft':
@@ -240,14 +238,14 @@ function CountdownTimer() {
             <div className={styles.pomodoro}>
                 <button 
                     ref={workButtonRef}
-                    onClick={handleWorkMode}
-                    className={`${styles.pomodoro_button} ${mode === 'work' ? styles.active : ''}`}>
+                    onClick={() => toggleMode('work')}
+                    className={`${styles.pomodoro_button} ${mode === 'work' ? styles.active : ''} ${pressedButton === 'work' ? 'space-pressed' : ''}`}>
                     Work
                 </button>
                 <button 
                     ref={breakButtonRef}
-                    onClick={handleBreakMode}
-                    className={`${styles.pomodoro_button} ${mode === 'break' ? styles.active : ''}`}>
+                    onClick={() => toggleMode('break')}
+                    className={`${styles.pomodoro_button} ${mode === 'break' ? styles.active : ''} ${pressedButton === 'break' ? 'space-pressed' : ''}`}>
                     Break
                 </button>
             </div>
