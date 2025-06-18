@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { Analytics } from "@vercel/analytics/react"
 import Stopwatch from './components/Stopwatch.jsx'
 import Timer from './components/Timer.jsx'
 import Settings from './components/Settings.jsx'
@@ -22,6 +22,7 @@ function App() {
               <Route path="/timer" element={<Timer />} />
               <Route path="/settings" element={<Settings />} />
             </Routes>
+            <Analytics />
           </main>
         </TimerProvider>
       </ModeProvider>
