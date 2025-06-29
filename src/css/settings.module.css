@@ -1,113 +1,134 @@
 .settings_display {
-    font-size: 6rem;
-    font-weight: bold;
-    color: #fff;
-    margin-top: 0px;
-    margin-bottom: 20px;
-    display: flex-start;
-    gap: 20px;
+  font-size: 6rem;
+  font-weight: bold;
+  color: #fff;
+  margin-top: 0px;
+  margin-bottom: 20px;
+  display: flex-start;
+  gap: 20px;
 }
 
 .time_input {
-    width: 100%;
-    height: 100%;
-    text-align: center;
-    font-size: 6rem;
-    font-weight: bold;
-    color: #fff;
-    background-color: transparent;
-    border: none;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  font-size: 6rem;
+  font-weight: bold;
+  color: #fff;
+  background-color: transparent;
+  border: none;
 }
 
 .time_input::placeholder {
-    color: #fff;
-    font-size: 6rem;
-    font-weight: bold;
-    text-align: center;
+  color: #fff;
+  font-size: 6rem;
+  font-weight: bold;
+  text-align: center;
 }
 
 .error_message {
-    color: #ff6464;
-    font-size: 1.2rem;
-    font-weight: bold;
-    margin-bottom: 1rem;
-    text-align: center;
-    min-height: 1.5em;
+  color: #ff6464;
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  text-align: center;
+  min-height: 1.5em;
 }
 
 .pomodoro {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    margin-bottom: 10px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 10px;
 }
 
 .pomodoro_button {
-    margin: 5px;
-    font-size: 1.5rem;
-    font-family: monospace, Comic Sans MS;
-    background-color: #fff;
-    color: black;
-    font-weight: bold;
-    border: none;
-    border-radius: 50px;
-    width: 200px;
-    height: 50px;
-    cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
+  margin: 5px;
+  font-size: 1.5rem;
+  font-family: monospace, Comic Sans MS;
+  background-color: #fff;
+  color: black;
+  font-weight: bold;
+  border: none;
+  border-radius: 50px;
+  width: 200px;
+  height: 50px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
 }
 
 .pomodoro_button.active {
-    background-color: #676767;
-    color: white;
-    transform: scale(1.02);
+  background-color: #676767;
+  color: white;
+  transform: scale(1.02);
 }
 
 .pomodoro_button:hover {
-    transform: scale(1.05);
+  transform: scale(1.05);
 }
 
 .pomodoro_button:active {
-    transform: scale(0.95);
+  transform: scale(0.95);
 }
 
 .message {
-    height: 1.5em;
-    margin-bottom: 20px;
-    text-align: center;
-    font-family: monospace;
+  height: 1.5em;
+  margin-bottom: 20px;
+  text-align: center;
+  font-family: monospace;
 }
 
 .error {
-    color: #ff6b6b;
-    font-weight: bold;
-    font-size: 1.2rem;
+  color: #ff6b6b;
+  font-weight: bold;
+  font-size: 1.2rem;
 }
 
 .confirmation {
-    color: #69db7c;
-    font-weight: bold;
-    font-size: 1.2rem;
-    animation: fadeInOut 2s ease-in-out;
-    animation-fill-mode: forwards;
+  color: #69db7c;
+  font-weight: bold;
+  font-size: 1.2rem;
+  animation: fadeInOut 2s ease-in-out;
+  animation-fill-mode: forwards;
 }
 
 @keyframes fadeInOut {
-    0% {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    15% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-    85% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-    100% {
-        opacity: 0;
-        transform: translateY(10px);
-    }
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  15% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  85% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+@media (max-width: 600px) {
+  .pomodoro_button {
+    width: 30vw;
+    height: 50px;
+  }
+}
+
+@media (max-width: 500px) {
+  .settings_display {
+    font-size: 4rem;
+  }
+
+  .time_input {
+    font-size: 4rem;
+  }
+
+  .time_input::placeholder {
+    font-size: 4rem;
+  }
 }

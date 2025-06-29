@@ -1,6 +1,4 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
   padding: 2rem;
   text-align: center;
 }
@@ -16,8 +14,8 @@
   border: none;
   border-radius: 10px;
   background-color: #255429;
-  width: 750px;
-  height: 450px;
+  width: 52vw;
+  height: 62vh;
   padding: 32px;
   display: flex;
   flex-direction: column;
@@ -25,8 +23,9 @@
   justify-content: flex-start;
   gap: 0;
 }
+
 .card h2 {
-  margin-top: 20px;    
+  margin-top: 20px;
 }
 /* Themes */
 .card.teal {
@@ -107,3 +106,66 @@
 .space-pressed {
   animation: spacePress 0.2s ease;
 }
+
+
+@media (max-width: 1000px) {
+.card {
+  width: 70vw;
+  height: 62vh;
+}
+
+.controls {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  gap: 10px;
+  width: 100%;
+}
+
+.controls button {
+  font-size: 1.3rem;
+  flex: 1; /* make each button grow equally */
+  height: 70px;
+  min-width: 0; /* prevent overflow */
+
+}
+
+.controls .small_button {
+  flex: 0 0 70px; /* fixed size for small buttons */
+  height: 70px;
+}
+}
+
+
+@media (max-width: 700px) {
+.card {
+  width: 80vw;
+  height: 450px;
+}
+
+.controls {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  gap: 10px;
+  width: 100%;
+}
+
+.controls button {
+  font-size: 1.3rem;
+  flex: 1; /* make each button grow equally */
+  height: 70px;
+  min-width: 0; /* prevent overflow */
+
+}
+
+.controls .small_button {
+  flex: 0 0 70px; /* fixed size for small buttons */
+  height: 70px;
+}
+}
+
