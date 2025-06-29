@@ -70,6 +70,24 @@ function Settings() {
         }
     };
 
+    // Handle input changes for mobile keyboard
+    const handleInputChange = (e) => {
+        const value = e.target.value;
+        // Remove all non-numeric characters
+        const numericValue = value.replace(/\D/g, '');
+        
+        // Limit to 6 digits
+        if (numericValue.length <= 6) {
+            setRaw(numericValue);
+            setError('');
+        }
+    };
+
+    // Handle input focus to select all text
+    const handleInputFocus = (e) => {
+        e.target.select();
+    };
+
     // Handle navigation between elements
     const handleNavigation = (e) => {
         switch (e.key) {
@@ -202,7 +220,8 @@ function Settings() {
                     className={styles.time_input}
                     value={raw === '' ? '' : formatTimeInput(raw)}
                     onKeyDown={handleInputKeyDown}
-                    readOnly
+                    onChange={handleInputChange}
+                    onFocus={handleInputFocus}
                     maxLength={8}
                     placeholder="00:00:00"
                 />

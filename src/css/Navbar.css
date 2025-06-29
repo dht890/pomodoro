@@ -1,137 +1,168 @@
 .navbar {
-    font-family: monospace, Comic Sans MS;
-    background-color: #1a3b1d;
-    padding: 1rem 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
+  font-family: monospace, Comic Sans MS;
+  background-color: #1a3b1d;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
 }
 
 .navbar-brand a {
-    color: #fff;
-    text-decoration: none;
-    font-size: 1.5rem;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    border-radius: 5px;
+  color: #fff;
+  text-decoration: none;
+  font-size: 1.5rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
 }
 
-.navbar-brand a:hover{
-    background-color: #255429;
-    transition: 0.3s ease;
+.navbar-brand a:hover {
+  background-color: #255429;
+  transition: 0.3s ease;
 }
 
 .navbar.teal .navbar-brand a:hover {
-    background-color: rgb(56, 133, 138);
+  background-color: rgb(56, 133, 138);
 }
 
 .brand-icon {
-    width: 32px;
-    height: 32px;
-    transition: transform 0.3s ease;
+  width: 32px;
+  height: 32px;
+  transition: transform 0.3s ease;
 }
 
 .navbar-brand a:hover .brand-icon {
-    transform: scale(1.1);
+  transform: scale(1.1);
 }
 
 .navbar-links {
-    display: flex;
-    gap: 2rem;
-    align-items: center;
+  display: flex;
+  gap: 2rem;
+  align-items: center;
 }
 
 .nav-link {
-    color: #fff;
-    text-decoration: none;
-    font-size: 1.5rem;
-    font-weight: bold;
-    padding: 0.5rem 1rem;
-    border-radius: 5px;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+  color: #fff;
+  text-decoration: none;
+  font-size: 1.5rem;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .nav-icon {
-    width: 30px;
-    height: 30px;
-    filter: brightness(0) invert(1);
-    transition: transform 0.3s ease;
+  width: 30px;
+  height: 30px;
+  filter: brightness(0) invert(1);
+  transition: transform 0.3s ease;
 }
 
 .nav-link:hover {
-    background-color: #255429;
+  background-color: #255429;
 }
 
 .navbar.teal .nav-link:hover {
-    background-color: rgb(56, 133, 138);
+  background-color: rgb(56, 133, 138);
 }
 
 .nav-link:hover .nav-icon {
-    transform: scale(1.1);
+  transform: scale(1.1);
 }
 
 /* Add some padding to the main content to account for fixed navbar */
 main {
-    padding-top: 80px;
+  padding-top: 80px;
 }
 
 .credits {
-    font-family: monospace;
-    position: fixed;
-    bottom: 0;
-    right: 0;
-    margin: 10px;
-    font-size: 1rem;
-    color: #fff;
-    opacity: 0.6;
-    display: block;
-    text-align: right;
+  font-family: monospace;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  margin: 10px;
+  font-size: 1rem;
+  color: #fff;
+  opacity: 0.6;
+  display: block;
+  text-align: right;
 }
 
 .credits .inputs {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: block;
-    text-align: center;
-    font-size: 1.2rem;
-    opacity: 0.8;
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: block;
+  text-align: center;
+  font-size: 1.2rem;
+  opacity: 0.8;
 }
 
 .credits .inputs p {
-    font-size: 1em;
-    margin-top: 0;
-    margin-bottom: 0;
+  font-size: 1em;
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 .credits img {
-    height: 23px;
-    width: auto;
-    display: inline-block;
-    vertical-align: middle;
-    margin-left: 5px;
+  height: 23px;
+  width: auto;
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 5px;
 }
 
 .credits .version {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 0;
+  color: #fff;
+  opacity: 0.6;
+}
+
+@media (max-width: 650px) {
+  .navbar {
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;   /* center horizontally */
+    justify-content: center; /* optional */
+    text-align: center;    /* for inline elements like text */
+  }
+.nav-link {
+  justify-content: center;
+}
+.credits .inputs {
     position: fixed;
-    bottom: 10px;
-    left: 10px;
-    font-size: 1.2rem;
-    font-weight: bold;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: row;
+    gap: 2rem; /* space between the instructions */
+    text-align: center;
+    opacity: 0.8;
+  }
+
+  .credits .inputs p {
     margin: 0;
-    color: #fff;
-    opacity: 0.6;
+    font-size: 1rem;     /* optional: resize for small screens */
+    white-space: nowrap;   /* prevent wrapping within each p */
+  }
 }

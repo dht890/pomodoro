@@ -1,23 +1,41 @@
 .stopwatch_display {
-    font-size: 6rem;
-    font-weight: bold;
-    color: #fff;
-    margin-bottom: 60px;
-    padding-bottom: 10px;
+  font-size: 6rem;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 60px;
+  padding-bottom: 10px;
 }
 
 .splits {
-    height: 150px;
-    width: 500px;
-    font-size: 1.5rem;
-    text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-    font-weight: bold;
-    overflow-y: auto;
-    padding: 10px;
-    font-family: system-ui, monospace;
+  height: 150px;
+  width: 500px;
+  font-size: 1.5rem;
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+  font-weight: bold;
+  overflow-y: auto;
+  padding: 10px;
+  font-family: system-ui, monospace;
 }
 
 .split_item {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    padding: 4px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 4px 0;
+}
+
+@media (max-width: 600px) {
+  .stopwatch_display {
+    font-size: 5rem;
+  }
+
+  .splits {
+    height: 110px;
+    width: 80vw;
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 500px) {
+  .stopwatch_display {
+    font-size: 4rem;
+  }
 }
