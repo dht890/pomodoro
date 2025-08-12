@@ -2,7 +2,7 @@
   font-size: 6rem;
   font-weight: bold;
   color: #fff;
-  margin-bottom: 70px;
+  margin-bottom: 0px;
 }
 .bell_icon {
   margin-top: 3px;
@@ -24,6 +24,14 @@
   align-items: center;
   justify-content: center;
   gap: 0.25em;
+}
+
+.disclaimer{
+  font-family: monospace, Comic Sans MS;
+  font-weight: bold;
+  padding: 7px;
+  font-size: 1rem;
+  opacity: 0.6;
 }
 
 .pomodoro {
@@ -71,6 +79,9 @@
   width: 30vw;
   height: 50px;
 }
+  .disclaimer {
+    font-size: 0.9rem;
+  }
 }
 
 @media (max-width: 500px) {

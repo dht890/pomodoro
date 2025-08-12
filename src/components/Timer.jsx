@@ -363,6 +363,9 @@ function CountdownTimer() {
                 {formatEndTime(timerState.time)}
             </div>
             <div className={styles.timer_display}>{formatTime(timerState.time)}</div>
+            <div>
+                <p className={styles.disclaimer}>Audio may not play if left in the background.</p>
+            </div>
             <div className='controls'>
                 <button
                     ref={settingsButtonRef}
