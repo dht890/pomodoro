@@ -27,6 +27,7 @@ function timerReducer(state, action) {
                 // If resuming from pause, keep current time. If starting fresh, use full duration
                 time: action.fromPause ? state.time : action.duration,
                 baseTime: action.fromPause ? state.time : action.duration,
+                startTimestamp: Date.now() - (action.fromPause ? (state.baseTime - state.time) : 0),
                 isRunning: true
             };
         case 'STOP_TIMER':
@@ -98,7 +99,7 @@ function CountdownTimer() {
             clearInterval(intervalRef.current);
             intervalRef.current = null;
         }
-        
+
         const newDuration = getCurrentDuration(mode);
         console.log('Mode changed to:', mode, 'New duration:', newDuration);
         dispatch({ type: 'MODE_CHANGE', duration: newDuration });
@@ -107,15 +108,14 @@ function CountdownTimer() {
     // Main timer effect - handles countdown logic
     useEffect(() => {
         if (timerState.isRunning && timerState.time > 0) {
-            const startTimestamp = Date.now();
             intervalRef.current = setInterval(() => {
-                const elapsed = Date.now() - startTimestamp;
+                const elapsed = Date.now() - timerState.startTimestamp;
                 const newTime = timerState.baseTime - elapsed;
+
                 if (newTime <= 0) {
                     clearInterval(intervalRef.current);
                     dispatch({ type: 'STOP_TIMER' });
                     playSound();
-                    // Switch modes and reset timer state
                     const nextMode = mode === 'work' ? 'break' : 'work';
                     toggleMode(nextMode);
                     const nextDuration = getCurrentDuration(nextMode);
@@ -123,7 +123,7 @@ function CountdownTimer() {
                 } else {
                     dispatch({ type: 'SET_TIME', time: newTime });
                 }
-            }, 10);
+            }, 1000); // once per second is enough
         } else if (intervalRef.current) {
             clearInterval(intervalRef.current);
             intervalRef.current = null;
@@ -134,7 +134,8 @@ function CountdownTimer() {
                 clearInterval(intervalRef.current);
             }
         };
-    }, [timerState.isRunning, timerState.baseTime, mode, toggleMode, getCurrentDuration]);
+    }, [timerState.isRunning, timerState.startTimestamp, timerState.baseTime, mode, toggleMode, getCurrentDuration]);
+
 
     // Keyboard navigation and control effect
     useEffect(() => {
@@ -283,8 +284,7 @@ function CountdownTimer() {
         const hours = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
         const minutes = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
         const seconds = String(totalSeconds % 60).padStart(2, '0');
-        const milliseconds = String(Math.floor((time % 1000) / 10)).padStart(2, '0');
-        return `${hours}:${minutes}:${seconds}:${milliseconds}`;
+        return `${hours}:${minutes}:${seconds}`;
     }
 
     /**
