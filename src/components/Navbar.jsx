@@ -32,11 +32,11 @@ function Navbar() {
                     <p>arrow keys - navigate</p>
                     <p>space/enter - confirm</p>
                 </div>
-                <div className='version'>
+                {/* <div className='version'>
                     v6.0.2
                 </div>
                 Created with React
-                <img src={reactIcon} />
+                <img src={reactIcon} /> */}
             </div>
         </nav>
     );
